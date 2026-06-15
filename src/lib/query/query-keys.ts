@@ -9,4 +9,5 @@ export const QUERY_KEYS = {
   bodyMetric: (date: string) => ['schedule', 'metric', date] as const,
   dayNote: (date: string) => ['schedule', 'note', date] as const,
   stats: (rangeDays: number) => ['stats', rangeDays] as const,
+  notifications: () => ['notifications'] as const,
 } as const;

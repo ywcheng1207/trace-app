@@ -1,21 +1,28 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit';
 
 type ThemeMode = 'light' | 'dark' | 'system';
-type NotificationType = 'success' | 'error' | 'info';
+export type NotificationType = 'success' | 'error' | 'warning' | 'info';
 
-type Notification = {
+export type Notification = {
+  id: string;
   type: NotificationType;
   message: string;
+  title?: string;
+  actionPath?: string;
 };
+
+export type NotificationInput = Omit<Notification, 'id'>;
+
+const MAX_QUEUE = 6;
 
 type UiState = {
   themeMode: ThemeMode;
-  notification: Notification | null;
+  notifications: Notification[];
 };
 
 const initialState: UiState = {
   themeMode: 'system',
-  notification: null,
+  notifications: [],
 };
 
 const uiSlice = createSlice({
@@ -25,11 +32,17 @@ const uiSlice = createSlice({
     setThemeMode: (state, action: PayloadAction<ThemeMode>) => {
       state.themeMode = action.payload;
     },
-    showNotification: (state, action: PayloadAction<Notification>) => {
-      state.notification = action.payload;
+    showNotification: {
+      reducer: (state, action: PayloadAction<Notification>) => {
+        state.notifications.push(action.payload);
+        if (state.notifications.length > MAX_QUEUE) {
+          state.notifications = state.notifications.slice(-MAX_QUEUE);
+        }
+      },
+      prepare: (input: NotificationInput) => ({ payload: { id: nanoid(), ...input } }),
     },
-    dismissNotification: (state) => {
-      state.notification = null;
+    dismissNotification: (state, action: PayloadAction<string>) => {
+      state.notifications = state.notifications.filter((item) => item.id !== action.payload);
     },
   },
 });

@@ -11,5 +11,11 @@
   "delete_fail": "刪除失敗",
   "save_success": "儲存成功",
   "save_fail": "儲存失敗",
-  "error_occurred": "發生錯誤，請稍後再試"
+  "error_occurred": "發生錯誤，請稍後再試",
+  "ok": "好",
+  "view_page": "查看",
+  "center_title": "通知",
+  "center_empty_title": "目前沒有通知",
+  "center_empty_desc": "系統通知會顯示在這裡",
+  "mark_all_read": "全部標為已讀"
 }

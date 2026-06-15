@@ -12,6 +12,7 @@ import { PageHeader } from '@/components/ui/page-header';
 import { Switch } from '@/components/ui/switch';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useLogout } from '@/features/auth/api/hooks';
+import { NotificationBell } from '@/features/notifications/components/notification-bell';
 import { useSetHiddenMetrics, useUpdateLanguage, useProfile } from '@/features/profile/api/hooks';
 import { APP_LOCALES, AppLocale } from '@/features/profile/api/schemas';
 import { BODY_METRIC_FIELDS } from '@/features/schedule/api/schemas';
@@ -56,7 +57,7 @@ const SettingScreen = () => {
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: theme.background }]} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <PageHeader title={t('nav:setting')} subtitle={t('subtitle')} />
+        <PageHeader title={t('nav:setting')} subtitle={t('subtitle')} right={<NotificationBell />} />
 
         <Card>
           <View style={styles.profileRow}>

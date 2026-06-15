@@ -4,10 +4,14 @@ import {
   mockArchiveExercise,
   mockCreateExercise,
   mockGetExercise,
+  mockGetExerciseUsage,
   mockListArchived,
   mockListExercises,
   mockPurgeExercise,
+  mockQuickStartExercises,
   mockRestoreExercise,
+  mockSetExerciseNote,
+  mockSetExerciseVideo,
   mockUpdateExercise,
 } from '@/features/exercises/api/mock';
 import { ExerciseFormValues } from '@/features/exercises/api/schemas';
@@ -70,5 +74,40 @@ export const usePurgeExercise = () => {
   return useMutation({
     mutationFn: (id: string) => mockPurgeExercise(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.archivedExercises() }),
+  });
+};
+
+const invalidateDetail = (id: string) => {
+  void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.exerciseDetail(id) });
+  void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.exercises() });
+};
+
+export const useExerciseUsage = (id: string) => {
+  // TODO: 換成 apiFetch('/api/exercises/[id]/usage', { schema: exerciseUsageSchema })
+  return useQuery({
+    queryKey: QUERY_KEYS.exerciseUsage(id),
+    queryFn: () => mockGetExerciseUsage(id),
+  });
+};
+
+export const useSetExerciseNote = () => {
+  return useMutation({
+    mutationFn: (input: { id: string; note: string }) => mockSetExerciseNote(input.id, input.note),
+    onSuccess: (_result, input) => invalidateDetail(input.id),
+  });
+};
+
+export const useSetExerciseVideo = () => {
+  return useMutation({
+    mutationFn: (input: { id: string; videoUrl: string }) =>
+      mockSetExerciseVideo(input.id, input.videoUrl),
+    onSuccess: (_result, input) => invalidateDetail(input.id),
+  });
+};
+
+export const useQuickStartExercises = () => {
+  return useMutation({
+    mutationFn: () => mockQuickStartExercises(),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.exercises() }),
   });
 };

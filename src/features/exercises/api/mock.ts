@@ -1,4 +1,4 @@
-import { Exercise, ExerciseFormValues } from '@/features/exercises/api/schemas';
+import { Exercise, ExerciseFormValues, ExerciseUsage } from '@/features/exercises/api/schemas';
 
 const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
@@ -9,6 +9,7 @@ let exercises: Exercise[] = [
     id: 'ex_seed_1',
     name: 'Barbell Bench Press',
     note: 'Focus on a controlled eccentric.',
+    videoUrl: 'https://videos.trace.app/demo/bench-press.mp4',
     muscleGroups: ['chest_mid', 'front_delt', 'triceps'],
     category: 'HYPERTROPHY',
     force: 'PUSH',
@@ -21,6 +22,7 @@ let exercises: Exercise[] = [
     id: 'ex_seed_2',
     name: 'Back Squat',
     note: null,
+    videoUrl: null,
     muscleGroups: ['quads', 'glutes', 'lower_back'],
     category: 'STRENGTH',
     force: 'SQUAT',
@@ -33,6 +35,7 @@ let exercises: Exercise[] = [
     id: 'ex_seed_3',
     name: 'Lat Pulldown',
     note: null,
+    videoUrl: null,
     muscleGroups: ['lats', 'biceps'],
     category: 'HYPERTROPHY',
     force: 'PULL',
@@ -45,6 +48,7 @@ let exercises: Exercise[] = [
     id: 'ex_seed_4',
     name: 'Plank',
     note: 'Brace the core, neutral spine.',
+    videoUrl: null,
     muscleGroups: ['abs', 'obliques'],
     category: 'MOBILITY',
     force: 'STATIC',
@@ -83,6 +87,7 @@ export const mockCreateExercise = async (values: ExerciseFormValues): Promise<Ex
     id: createId(),
     name: values.name,
     note: values.note.trim() === '' ? null : values.note,
+    videoUrl: null,
     muscleGroups: values.muscleGroups,
     category: values.category,
     force: values.force,
@@ -137,4 +142,60 @@ export const mockRestoreExercise = async (id: string): Promise<void> => {
 export const mockPurgeExercise = async (id: string): Promise<void> => {
   await delay(300);
   exercises = exercises.filter((item) => item.id !== id);
+};
+
+// TODO: 換成 apiFetch('/api/exercises/[id]/note', { method: 'PATCH', body: { note }, schema })
+export const mockSetExerciseNote = async (id: string, note: string): Promise<Exercise | null> => {
+  await delay(300);
+  let updated: Exercise | null = null;
+  exercises = exercises.map((item) => {
+    if (item.id !== id) return item;
+    updated = { ...item, note: note.trim() === '' ? null : note };
+    return updated;
+  });
+  return updated ? clone(updated) : null;
+};
+
+// TODO: 換成 apiFetch('/api/upload/authorize' + apiFetch('/api/exercises/[id]/video', ...)
+export const mockSetExerciseVideo = async (id: string, videoUrl: string): Promise<void> => {
+  await delay(300);
+  exercises = exercises.map((item) => (item.id === id ? { ...item, videoUrl } : item));
+};
+
+// TODO: 換成 apiFetch('/api/exercises/[id]/usage', { schema: exerciseUsageSchema })
+export const mockGetExerciseUsage = async (id: string): Promise<ExerciseUsage> => {
+  await delay(250);
+  // mock：以 id 衍生穩定的引用數，demo 用。
+  const seed = id.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+  const planCount = seed % 3;
+  const dates = Array.from({ length: planCount }, (_, index) => `2026-06-${String(10 + index).padStart(2, '0')}`);
+  return { planCount, dates };
+};
+
+const STARTER_EXERCISES: ExerciseFormValues[] = [
+  { name: 'Barbell Bench Press', note: '', muscleGroups: ['chest_mid', 'front_delt', 'triceps'], category: 'HYPERTROPHY', force: 'PUSH', kineticChain: 'CKC', mechanic: 'COMPOUND' },
+  { name: 'Back Squat', note: '', muscleGroups: ['quads', 'glutes'], category: 'STRENGTH', force: 'SQUAT', kineticChain: 'CKC', mechanic: 'COMPOUND' },
+  { name: 'Deadlift', note: '', muscleGroups: ['hamstrings', 'glutes', 'lower_back'], category: 'STRENGTH', force: 'HINGE', kineticChain: 'CKC', mechanic: 'COMPOUND' },
+  { name: 'Pull-up', note: '', muscleGroups: ['lats', 'biceps'], category: 'HYPERTROPHY', force: 'PULL', kineticChain: 'CKC', mechanic: 'COMPOUND' },
+  { name: 'Overhead Press', note: '', muscleGroups: ['front_delt', 'side_delt', 'triceps'], category: 'STRENGTH', force: 'PUSH', kineticChain: 'OKC', mechanic: 'COMPOUND' },
+  { name: 'Plank', note: '', muscleGroups: ['abs', 'obliques'], category: 'MOBILITY', force: 'STATIC', kineticChain: 'CKC', mechanic: 'ISOLATION' },
+];
+
+// TODO: 換成 apiFetch('/api/exercises/quick-start', { method: 'POST', schema })
+export const mockQuickStartExercises = async (): Promise<void> => {
+  await delay(500);
+  const created: Exercise[] = STARTER_EXERCISES.map((values) => ({
+    id: createId(),
+    name: values.name,
+    note: null,
+    videoUrl: null,
+    muscleGroups: values.muscleGroups,
+    category: values.category,
+    force: values.force,
+    kineticChain: values.kineticChain,
+    mechanic: values.mechanic,
+    createdAt: new Date().toISOString(),
+    deletedAt: null,
+  }));
+  exercises = [...created, ...exercises];
 };

@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { Chip } from '@/components/ui/chip';
 import { Fonts, Spacing } from '@/constants/theme';
 import { MUSCLE_GROUPS, MUSCLE_REGIONS } from '@/features/exercises/api/schemas';
+import { MuscleAnatomy } from '@/features/exercises/components/muscle-anatomy';
 import { useTheme } from '@/hooks/use-theme';
 
 type MuscleSelectorProps = {
@@ -24,6 +25,9 @@ export const MuscleSelector = ({ value, onChange }: MuscleSelectorProps) => {
 
   return (
     <View style={styles.container}>
+      <MuscleAnatomy value={value} onChange={onChange} />
+
+      <Text style={[styles.fallbackLabel, { color: theme.textSecondary }]}>{t('fine_select')}</Text>
       {MUSCLE_REGIONS.map((region) => (
         <View key={region} style={styles.region}>
           <Text style={[styles.regionLabel, { color: theme.textSecondary }]}>
@@ -48,6 +52,11 @@ export const MuscleSelector = ({ value, onChange }: MuscleSelectorProps) => {
 const styles = StyleSheet.create({
   container: {
     gap: Spacing.three,
+  },
+  fallbackLabel: {
+    fontFamily: Fonts.sans,
+    fontSize: 13,
+    fontWeight: '600',
   },
   region: {
     gap: Spacing.two,

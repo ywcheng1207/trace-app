@@ -2,18 +2,20 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Loading } from '@/components/ui/loading';
 import { ScreenContainer } from '@/components/ui/screen-container';
 import { Fonts, Spacing } from '@/constants/theme';
-import { useArchiveExercise, useExercise } from '@/features/exercises/api/hooks';
+import { useArchiveExercise, useExercise, useExerciseUsage } from '@/features/exercises/api/hooks';
 import { ExerciseFormSheet } from '@/features/exercises/components/exercise-form-sheet';
+import { ExerciseVideoSection } from '@/features/exercises/components/exercise-video-section';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
@@ -25,29 +27,34 @@ const ExerciseDetailScreen = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { data: exercise, isLoading } = useExercise(id);
+  const { data: usage } = useExerciseUsage(id);
   const archiveExercise = useArchiveExercise();
   const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isArchiveConfirmOpen, setIsArchiveConfirmOpen] = useState(false);
 
-  const handleArchive = () => {
+  const usageCount = usage?.planCount ?? 0;
+  const archiveMessage =
+    usageCount > 0
+      ? t('archive_confirm_used', { count: usageCount })
+      : t('archive_confirm_desc', { name: exercise?.name ?? '' });
+
+  const handleConfirmArchive = () => {
     if (!exercise) return;
-    Alert.alert(t('archive_confirm_title'), t('archive_confirm_desc', { name: exercise.name }), [
-      { text: t('common:cancel'), style: 'cancel' },
-      {
-        text: t('archive'),
-        style: 'destructive',
-        onPress: () =>
-          archiveExercise.mutate(exercise.id, {
-            onSuccess: () => {
-              dispatch(showNotification({ type: 'success', message: t('notify:delete_success') }));
-              router.back();
-            },
-          }),
+    archiveExercise.mutate(exercise.id, {
+      onSuccess: () => {
+        dispatch(showNotification({ type: 'success', message: t('notify:delete_success') }));
+        setIsArchiveConfirmOpen(false);
+        router.back();
       },
-    ]);
+    });
   };
 
   const handleAiAdvice = () => {
     dispatch(showNotification({ type: 'info', message: t('common:comingSoon') }));
+  };
+
+  const handleEditNote = () => {
+    router.push(`/exercises/note/${id}`);
   };
 
   if (isLoading) return <Loading />;
@@ -117,10 +124,17 @@ const ExerciseDetailScreen = () => {
         )}
       </Card>
 
+      <ExerciseVideoSection exerciseId={exercise.id} videoUrl={exercise.videoUrl} />
+
       <Card>
-        <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>
-          {t('exercise_note')}
-        </Text>
+        <View style={styles.noteHeader}>
+          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>
+            {t('exercise_note')}
+          </Text>
+          <Pressable onPress={handleEditNote} hitSlop={8}>
+            <Text style={[styles.editNote, { color: theme.accent }]}>{t('edit_note')}</Text>
+          </Pressable>
+        </View>
         <Text style={[styles.note, { color: exercise.note ? theme.text : theme.muted }]}>
           {exercise.note ?? t('no_note')}
         </Text>
@@ -129,13 +143,29 @@ const ExerciseDetailScreen = () => {
       <View style={styles.buttons}>
         <Button label={t('edit')} onPress={() => setIsEditOpen(true)} fullWidth />
         <Button label={t('ai_advice_button')} variant="secondary" onPress={handleAiAdvice} fullWidth />
-        <Button label={t('archive')} variant="danger" onPress={handleArchive} fullWidth />
+        <Button
+          label={t('archive')}
+          variant="danger"
+          onPress={() => setIsArchiveConfirmOpen(true)}
+          fullWidth
+        />
       </View>
 
       <ExerciseFormSheet
         visible={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         exercise={exercise}
+      />
+
+      <ConfirmDialog
+        visible={isArchiveConfirmOpen}
+        title={t('archive_confirm_title')}
+        message={archiveMessage}
+        confirmLabel={t('archive')}
+        cancelLabel={t('common:cancel')}
+        destructive
+        onConfirm={handleConfirmArchive}
+        onClose={() => setIsArchiveConfirmOpen(false)}
       />
     </ScreenContainer>
   );
@@ -164,6 +194,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     marginBottom: Spacing.two,
+  },
+  noteHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  editNote: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    fontWeight: '600',
   },
   attrRow: {
     flexDirection: 'row',

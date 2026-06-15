@@ -58,5 +58,18 @@
   "kinetic_chain_okc": "開放式動力鏈",
   "kinetic_chain_ckc": "閉鎖式動力鏈",
   "mechanic_compound": "多關節",
-  "mechanic_isolation": "單關節"
+  "mechanic_isolation": "單關節",
+  "archive_confirm_used": "此動作目前被 {{count}} 個訓練計畫引用，封存後仍會以名稱保留於計畫中。確定封存？",
+  "demo_video": "示範影片",
+  "video_ready": "已設定示範影片",
+  "no_video": "尚未設定示範影片",
+  "change_video": "更換影片",
+  "add_video": "新增示範影片",
+  "video_updated": "示範影片已更新",
+  "edit_note": "編輯",
+  "edit_note_title": "編輯動作筆記",
+  "note_placeholder": "記錄技術重點、感受或調整...",
+  "save_note": "儲存筆記",
+  "quick_start": "快速建立入門動作",
+  "quick_start_done": "已建立一組常見入門動作"
 }

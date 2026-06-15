@@ -56,6 +56,7 @@ export const exerciseSchema = z.object({
   id: z.string(),
   name: z.string(),
   note: z.string().nullable(),
+  videoUrl: z.string().nullable(),
   muscleGroups: z.array(z.string()),
   category: categorySchema.nullable(),
   force: forceSchema.nullable(),
@@ -65,6 +66,12 @@ export const exerciseSchema = z.object({
   deletedAt: z.string().nullable(),
 });
 export type Exercise = z.infer<typeof exerciseSchema>;
+
+export const exerciseUsageSchema = z.object({
+  planCount: z.number(),
+  dates: z.array(z.string()),
+});
+export type ExerciseUsage = z.infer<typeof exerciseUsageSchema>;
 
 export const exerciseFormSchema = z.object({
   name: z.string().min(1).max(255),

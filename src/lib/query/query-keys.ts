@@ -4,6 +4,7 @@ export const QUERY_KEYS = {
   exercises: () => ['exercises', 'list'] as const,
   archivedExercises: () => ['exercises', 'archived'] as const,
   exerciseDetail: (id: string) => ['exercises', 'detail', id] as const,
+  exerciseUsage: (id: string) => ['exercises', 'usage', id] as const,
   scheduleMonth: (year: number, month: number) => ['schedule', 'month', year, month] as const,
   dayPlan: (date: string) => ['schedule', 'plan', date] as const,
   bodyMetric: (date: string) => ['schedule', 'metric', date] as const,

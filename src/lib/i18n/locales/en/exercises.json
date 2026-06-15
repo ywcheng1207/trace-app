@@ -58,5 +58,18 @@
   "kinetic_chain_okc": "Open Kinetic Chain",
   "kinetic_chain_ckc": "Closed Kinetic Chain",
   "mechanic_compound": "Compound",
-  "mechanic_isolation": "Isolation"
+  "mechanic_isolation": "Isolation",
+  "archive_confirm_used": "This exercise is referenced by {{count}} training plan(s); it stays in those plans by name after archiving. Archive anyway?",
+  "demo_video": "Demo Video",
+  "video_ready": "Demo video is set",
+  "no_video": "No demo video yet",
+  "change_video": "Change video",
+  "add_video": "Add demo video",
+  "video_updated": "Demo video updated",
+  "edit_note": "Edit",
+  "edit_note_title": "Edit Exercise Note",
+  "note_placeholder": "Note technique cues, feel, or adjustments...",
+  "save_note": "Save Note",
+  "quick_start": "Quick-add starter exercises",
+  "quick_start_done": "Added a set of common starter exercises"
 }

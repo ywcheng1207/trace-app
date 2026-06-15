@@ -1,6 +1,24 @@
+import { BODY_METRIC_FIELDS, BodyMetricField } from '@/features/schedule/api/schemas';
 import { StatPoint, StatsSummary } from '@/features/statistics/api/schemas';
 
 const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+const METRIC_BASE: Record<BodyMetricField, number> = {
+  weight: 75,
+  bodyFat: 18,
+  muscleMass: 35,
+  chest: 100,
+  waist: 80,
+  hips: 95,
+  leftThigh: 56,
+  rightThigh: 56,
+  leftCalf: 38,
+  rightCalf: 38,
+  leftUpperArm: 38,
+  rightUpperArm: 38,
+  leftForearm: 28,
+  rightForearm: 28,
+};
 
 const wave = (index: number, base: number, amplitude: number): number =>
   Math.round(base + amplitude * (0.5 + 0.5 * Math.sin(index * 1.1)));
@@ -30,8 +48,10 @@ export const mockGetStats = async (rangeDays: number): Promise<StatsSummary> => 
     { label: 'core', value: 12 },
   ];
 
-  const weightTrend = buildTrend(points, 75, 2);
-  const bodyFatTrend = buildTrend(points, 18, 2);
+  const bodyMetricTrends = BODY_METRIC_FIELDS.map((field) => ({
+    field,
+    trend: buildTrend(points, METRIC_BASE[field], Math.max(1, METRIC_BASE[field] * 0.03)),
+  }));
 
   return {
     totalVolume,
@@ -39,7 +59,6 @@ export const mockGetStats = async (rangeDays: number): Promise<StatsSummary> => 
     workouts,
     volumeTrend,
     muscleDistribution,
-    weightTrend,
-    bodyFatTrend,
+    bodyMetricTrends,
   };
 };

@@ -6,14 +6,19 @@ export const statPointSchema = z.object({
 });
 export type StatPoint = z.infer<typeof statPointSchema>;
 
+export const bodyMetricTrendSchema = z.object({
+  field: z.string(),
+  trend: z.array(statPointSchema),
+});
+export type BodyMetricTrend = z.infer<typeof bodyMetricTrendSchema>;
+
 export const statsSummarySchema = z.object({
   totalVolume: z.number(),
   totalSets: z.number(),
   workouts: z.number(),
   volumeTrend: z.array(statPointSchema),
   muscleDistribution: z.array(statPointSchema),
-  weightTrend: z.array(statPointSchema),
-  bodyFatTrend: z.array(statPointSchema),
+  bodyMetricTrends: z.array(bodyMetricTrendSchema),
 });
 export type StatsSummary = z.infer<typeof statsSummarySchema>;
 

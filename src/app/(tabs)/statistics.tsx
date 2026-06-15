@@ -8,17 +8,25 @@ import { Chip } from '@/components/ui/chip';
 import { Loading } from '@/components/ui/loading';
 import { PageHeader } from '@/components/ui/page-header';
 import { Fonts, Spacing } from '@/constants/theme';
+import { useProfile } from '@/features/profile/api/hooks';
+import { BODY_METRIC_FIELDS } from '@/features/schedule/api/schemas';
 import { useStats } from '@/features/statistics/api/hooks';
 import { STATS_RANGES, StatPoint } from '@/features/statistics/api/schemas';
 import { BarChartView } from '@/features/statistics/components/bar-chart-view';
+import { MetricTrendCard } from '@/features/statistics/components/metric-trend-card';
 import { StatSummaryCard } from '@/features/statistics/components/stat-summary-card';
 import { useTheme } from '@/hooks/use-theme';
 
 const StatisticsScreen = () => {
-  const { t } = useTranslation(['statistics', 'nav', 'muscle']);
+  const { t } = useTranslation(['statistics', 'nav', 'muscle', 'schedule']);
   const theme = useTheme();
   const [rangeDays, setRangeDays] = useState<number>(30);
   const { data, isLoading } = useStats(rangeDays);
+  const { data: profile } = useProfile();
+
+  const hiddenMetrics = profile?.hiddenMetrics ?? [];
+  const visibleBodyFields = BODY_METRIC_FIELDS.filter((field) => !hiddenMetrics.includes(field));
+  const trendByField = new Map((data?.bodyMetricTrends ?? []).map((item) => [item.field, item.trend]));
 
   const summaryCards = data
     ? [
@@ -80,18 +88,13 @@ const StatisticsScreen = () => {
             </Card>
 
             <Text style={[styles.section, { color: theme.text }]}>{t('body_section')}</Text>
-            <Card>
-              <Text style={[styles.chartTitle, { color: theme.textSecondary }]}>
-                {t('weight_trend')}
-              </Text>
-              <BarChartView data={data.weightTrend} color={theme.success} />
-            </Card>
-            <Card>
-              <Text style={[styles.chartTitle, { color: theme.textSecondary }]}>
-                {t('body_fat_trend')}
-              </Text>
-              <BarChartView data={data.bodyFatTrend} color={theme.warning} />
-            </Card>
+            {visibleBodyFields.map((field) => (
+              <MetricTrendCard
+                key={field}
+                title={t(`schedule:metric_${field}`)}
+                data={trendByField.get(field) ?? []}
+              />
+            ))}
           </View>
         )}
       </ScrollView>

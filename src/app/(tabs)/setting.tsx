@@ -15,7 +15,7 @@ import { useLogout } from '@/features/auth/api/hooks';
 import { NotificationBell } from '@/features/notifications/components/notification-bell';
 import { useSetHiddenMetrics, useUpdateLanguage, useProfile } from '@/features/profile/api/hooks';
 import { APP_LOCALES, AppLocale } from '@/features/profile/api/schemas';
-import { BODY_METRIC_FIELDS } from '@/features/schedule/api/schemas';
+import { BODY_METRIC_GROUPS } from '@/features/schedule/api/schemas';
 import { PasswordChangeSheet } from '@/features/setting/components/password-change-sheet';
 import { ProfileEditSheet } from '@/features/setting/components/profile-edit-sheet';
 import { useTheme } from '@/hooks/use-theme';
@@ -94,15 +94,22 @@ const SettingScreen = () => {
           <Text style={[styles.hint, { color: theme.textSecondary }]}>
             {t('metric_preferences_desc')}
           </Text>
-          {BODY_METRIC_FIELDS.map((field) => (
-            <View key={field} style={[styles.metricRow, { borderTopColor: theme.border }]}>
-              <Text style={[styles.metricLabel, { color: theme.text }]}>
-                {t(`schedule:metric_${field}`)}
+          {BODY_METRIC_GROUPS.map((group) => (
+            <View key={group.key} style={styles.metricGroup}>
+              <Text style={[styles.metricGroupTitle, { color: theme.textSecondary }]}>
+                {t(`schedule:metric_group_${group.key}`)}
               </Text>
-              <Switch
-                value={!profile.hiddenMetrics.includes(field)}
-                onValueChange={(show) => handleToggleMetric(field, show)}
-              />
+              {group.fields.map((field) => (
+                <View key={field} style={[styles.metricRow, { borderTopColor: theme.border }]}>
+                  <Text style={[styles.metricLabel, { color: theme.text }]}>
+                    {t(`schedule:metric_${field}`)}
+                  </Text>
+                  <Switch
+                    value={!profile.hiddenMetrics.includes(field)}
+                    onValueChange={(show) => handleToggleMetric(field, show)}
+                  />
+                </View>
+              ))}
             </View>
           ))}
         </Card>
@@ -174,6 +181,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.two,
+  },
+  metricGroup: {
+    marginTop: Spacing.two,
+  },
+  metricGroupTitle: {
+    fontFamily: Fonts.sans,
+    fontSize: 13,
+    fontWeight: '600',
+    marginTop: Spacing.three,
   },
   metricRow: {
     flexDirection: 'row',

@@ -40,11 +40,20 @@ TBD - created by archiving change app-schedule. Update Purpose after archive.
 - **THEN** 新增鈕停用並提示已達上限
 
 ### Requirement: 日詳情 — 身體數值
-`schedule/[day]` SHALL 提供當日身體數值表單（weight / bodyFat / muscleMass / chest / waist / hips，皆選填），可儲存（mock）。每個日期一份數值。
+
+`schedule/[day]` 的身體數值表單 SHALL 支援基礎欄位（weight / bodyFat / muscleMass / chest / waist / hips）與四肢圍度欄位（leftThigh / rightThigh / leftCalf / rightCalf / leftUpperArm / rightUpperArm / leftForearm / rightForearm），對齊 web。欄位顯示 SHALL 依使用者的欄位偏好過濾，提交後（mock）即時更新。
+
+#### Scenario: 記錄四肢圍度
+- **WHEN** 使用者開啟四肢圍度欄位並填值儲存
+- **THEN** 該日身體數值含四肢圍度，圖表可呈現
 
 #### Scenario: 部分欄位填寫
-- **WHEN** 使用者只填部分欄位並儲存
-- **THEN** 已填欄位被保存，其餘維持空值
+- **WHEN** 使用者只填部分欄位
+- **THEN** 未填欄位存為 null，不影響其他欄位
+
+#### Scenario: 依偏好顯示
+- **WHEN** 使用者未開啟四肢圍度
+- **THEN** 表單不顯示四肢圍度欄位
 
 ### Requirement: 日詳情 — 訓練筆記
 `schedule/[day]` SHALL 提供當日純文字訓練筆記，可儲存（mock）。

@@ -1,0 +1,18 @@
+{
+  "subtitle": "检视你的训练与身体趋势。",
+  "range_7": "7天",
+  "range_30": "30天",
+  "range_90": "90天",
+  "summary_volume": "总训练量",
+  "summary_sets": "总组数",
+  "summary_workouts": "训练次数",
+  "unit_kg": "kg",
+  "training_section": "训练",
+  "volume_trend": "训练量趋势",
+  "muscle_distribution": "肌群分布",
+  "training_no_data": "此区间无训练数据",
+  "body_section": "身体数据",
+  "weight_trend": "体重趋势",
+  "body_fat_trend": "体脂趋势",
+  "body_no_data": "此区间无身体数据"
+}

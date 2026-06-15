@@ -1,0 +1,18 @@
+{
+  "subtitle": "檢視你的訓練與身體趨勢。",
+  "range_7": "7天",
+  "range_30": "30天",
+  "range_90": "90天",
+  "summary_volume": "總訓練量",
+  "summary_sets": "總組數",
+  "summary_workouts": "訓練次數",
+  "unit_kg": "kg",
+  "training_section": "訓練",
+  "volume_trend": "訓練量趨勢",
+  "muscle_distribution": "肌群分佈",
+  "training_no_data": "此區間無訓練資料",
+  "body_section": "身體數據",
+  "weight_trend": "體重趨勢",
+  "body_fat_trend": "體脂趨勢",
+  "body_no_data": "此區間無身體數據"
+}

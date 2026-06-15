@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
 import {
+  mockChangePassword,
   mockLogin,
   mockRegister,
   mockRequestReset,
@@ -10,6 +11,7 @@ import {
 import {
   ForgotPasswordRequest,
   LoginRequest,
+  PasswordChangeRequest,
   RegisterRequest,
   ResetPasswordRequest,
   Session,
@@ -66,6 +68,12 @@ export const useRequestPasswordReset = () => {
 export const useResetPassword = () => {
   return useMutation({
     mutationFn: (_payload: ResetPasswordRequest) => mockResetPassword(),
+  });
+};
+
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: (_payload: PasswordChangeRequest) => mockChangePassword(),
   });
 };
 

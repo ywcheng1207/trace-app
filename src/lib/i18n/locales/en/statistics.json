@@ -1,0 +1,18 @@
+{
+  "subtitle": "Review your training and body trends.",
+  "range_7": "7D",
+  "range_30": "30D",
+  "range_90": "90D",
+  "summary_volume": "Total Volume",
+  "summary_sets": "Total Sets",
+  "summary_workouts": "Workouts",
+  "unit_kg": "kg",
+  "training_section": "Training",
+  "volume_trend": "Volume Trend",
+  "muscle_distribution": "Muscle Distribution",
+  "training_no_data": "No training data for this period",
+  "body_section": "Body",
+  "weight_trend": "Weight Trend",
+  "body_fat_trend": "Body Fat Trend",
+  "body_no_data": "No body data for this period"
+}

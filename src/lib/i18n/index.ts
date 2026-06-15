@@ -9,6 +9,8 @@ import enMuscle from '@/lib/i18n/locales/en/muscle.json';
 import enNav from '@/lib/i18n/locales/en/nav.json';
 import enNotify from '@/lib/i18n/locales/en/notify.json';
 import enSchedule from '@/lib/i18n/locales/en/schedule.json';
+import enSetting from '@/lib/i18n/locales/en/setting.json';
+import enStatistics from '@/lib/i18n/locales/en/statistics.json';
 import zhHansAuth from '@/lib/i18n/locales/zh-Hans/auth.json';
 import zhHansCommon from '@/lib/i18n/locales/zh-Hans/common.json';
 import zhHansExercises from '@/lib/i18n/locales/zh-Hans/exercises.json';
@@ -16,6 +18,8 @@ import zhHansMuscle from '@/lib/i18n/locales/zh-Hans/muscle.json';
 import zhHansNav from '@/lib/i18n/locales/zh-Hans/nav.json';
 import zhHansNotify from '@/lib/i18n/locales/zh-Hans/notify.json';
 import zhHansSchedule from '@/lib/i18n/locales/zh-Hans/schedule.json';
+import zhHansSetting from '@/lib/i18n/locales/zh-Hans/setting.json';
+import zhHansStatistics from '@/lib/i18n/locales/zh-Hans/statistics.json';
 import zhHantAuth from '@/lib/i18n/locales/zh-Hant/auth.json';
 import zhHantCommon from '@/lib/i18n/locales/zh-Hant/common.json';
 import zhHantExercises from '@/lib/i18n/locales/zh-Hant/exercises.json';
@@ -23,6 +27,8 @@ import zhHantMuscle from '@/lib/i18n/locales/zh-Hant/muscle.json';
 import zhHantNav from '@/lib/i18n/locales/zh-Hant/nav.json';
 import zhHantNotify from '@/lib/i18n/locales/zh-Hant/notify.json';
 import zhHantSchedule from '@/lib/i18n/locales/zh-Hant/schedule.json';
+import zhHantSetting from '@/lib/i18n/locales/zh-Hant/setting.json';
+import zhHantStatistics from '@/lib/i18n/locales/zh-Hant/statistics.json';
 
 const resources = {
   'zh-Hant': {
@@ -33,6 +39,8 @@ const resources = {
     exercises: zhHantExercises,
     muscle: zhHantMuscle,
     schedule: zhHantSchedule,
+    statistics: zhHantStatistics,
+    setting: zhHantSetting,
   },
   'zh-Hans': {
     common: zhHansCommon,
@@ -42,6 +50,8 @@ const resources = {
     exercises: zhHansExercises,
     muscle: zhHansMuscle,
     schedule: zhHansSchedule,
+    statistics: zhHansStatistics,
+    setting: zhHansSetting,
   },
   en: {
     common: enCommon,
@@ -51,10 +61,22 @@ const resources = {
     exercises: enExercises,
     muscle: enMuscle,
     schedule: enSchedule,
+    statistics: enStatistics,
+    setting: enSetting,
   },
 } as const;
 
-const NAMESPACES = ['common', 'nav', 'auth', 'notify', 'exercises', 'muscle', 'schedule'] as const;
+const NAMESPACES = [
+  'common',
+  'nav',
+  'auth',
+  'notify',
+  'exercises',
+  'muscle',
+  'schedule',
+  'statistics',
+  'setting',
+] as const;
 
 type SupportedLocale = 'zh-Hant' | 'zh-Hans' | 'en';
 

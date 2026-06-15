@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { TextField } from '@/components/ui/text-field';
 import { Spacing } from '@/constants/theme';
+import { useProfile } from '@/features/profile/api/hooks';
 import { useSaveBodyMetric } from '@/features/schedule/api/hooks';
 import { BODY_METRIC_FIELDS, BodyMetric, BodyMetricField } from '@/features/schedule/api/schemas';
 import { useAppDispatch } from '@/store/hooks';
@@ -37,6 +38,9 @@ export const BodyMetricsForm = ({ date, metric }: BodyMetricsFormProps) => {
   const { t } = useTranslation(['schedule', 'notify']);
   const dispatch = useAppDispatch();
   const saveMetric = useSaveBodyMetric();
+  const { data: profile } = useProfile();
+  const hiddenMetrics = profile?.hiddenMetrics ?? [];
+  const visibleFields = BODY_METRIC_FIELDS.filter((field) => !hiddenMetrics.includes(field));
   const [values, setValues] = useState<Record<BodyMetricField, string>>(() => buildInitial(metric));
   const [syncedMetric, setSyncedMetric] = useState(metric);
 
@@ -69,7 +73,7 @@ export const BodyMetricsForm = ({ date, metric }: BodyMetricsFormProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.grid}>
-        {BODY_METRIC_FIELDS.map((field) => (
+        {visibleFields.map((field) => (
           <View key={field} style={styles.field}>
             <TextField
               label={t(`metric_${field}`)}

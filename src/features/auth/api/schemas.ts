@@ -48,3 +48,15 @@ export const sessionSchema = z.object({
   user: authUserSchema,
 });
 export type Session = z.infer<typeof sessionSchema>;
+
+export const passwordChangeSchema = z
+  .object({
+    oldPassword: z.string().min(1),
+    newPassword: z.string().min(6),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'passwords_not_match',
+  });
+export type PasswordChangeRequest = z.infer<typeof passwordChangeSchema>;

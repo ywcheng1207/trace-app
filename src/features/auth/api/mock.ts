@@ -28,3 +28,8 @@ export const mockRequestReset = async (): Promise<void> => {
 export const mockResetPassword = async (): Promise<void> => {
   await delay(600);
 };
+
+// TODO: 換成 apiFetch('/api/auth/change-password', { method: 'POST', body, schema })
+export const mockChangePassword = async (): Promise<void> => {
+  await delay(600);
+};

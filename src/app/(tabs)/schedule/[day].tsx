@@ -24,7 +24,10 @@ import { MAX_PLAN_EXERCISES, PlanExercise } from '@/features/schedule/api/schema
 import { BodyMetricsForm } from '@/features/schedule/components/body-metrics-form';
 import { ExercisePickerSheet } from '@/features/schedule/components/exercise-picker-sheet';
 import { PlanExerciseCard } from '@/features/schedule/components/plan-exercise-card';
-import { createPlanExercise } from '@/features/schedule/plan-utils';
+import { createPlanExercise, createPlanExerciseFromTemplate } from '@/features/schedule/plan-utils';
+import { ApplyTemplateSheet } from '@/features/training-templates/components/apply-template-sheet';
+import { SaveTemplateSheet } from '@/features/training-templates/components/save-template-sheet';
+import { TrainingTemplate } from '@/features/training-templates/api/schemas';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
@@ -50,6 +53,9 @@ const DayDetailScreen = () => {
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
+  const [isSaveTemplateOpen, setIsSaveTemplateOpen] = useState(false);
+  const [isApplyTemplateOpen, setIsApplyTemplateOpen] = useState(false);
+  const [pendingTemplate, setPendingTemplate] = useState<TrainingTemplate | null>(null);
 
   const isLibraryEmpty = (library ?? []).length === 0;
   const isAtPlanLimit = exercises.length >= MAX_PLAN_EXERCISES;
@@ -92,6 +98,25 @@ const DayDetailScreen = () => {
   const handleGoToExercises = () => {
     setIsGuideOpen(false);
     router.push('/exercises');
+  };
+
+  const applyTemplateNow = (template: TrainingTemplate) => {
+    setExercises(template.exercises.map(createPlanExerciseFromTemplate));
+    dispatch(showNotification({ type: 'success', message: t('template_applied') }));
+  };
+
+  const handleApplyTemplate = (template: TrainingTemplate) => {
+    setIsApplyTemplateOpen(false);
+    if (exercises.length > 0) {
+      setPendingTemplate(template);
+      return;
+    }
+    applyTemplateNow(template);
+  };
+
+  const handleConfirmOverwrite = () => {
+    if (pendingTemplate) applyTemplateNow(pendingTemplate);
+    setPendingTemplate(null);
   };
 
   const handleSavePlan = () => {
@@ -154,6 +179,28 @@ const DayDetailScreen = () => {
             {t('plan_limit_reached', { max: MAX_PLAN_EXERCISES })}
           </Text>
         ) : null}
+        <View style={styles.templateRow}>
+          <View style={styles.templateAction}>
+            <Button
+              label={t('apply_template')}
+              variant="secondary"
+              size="sm"
+              onPress={() => setIsApplyTemplateOpen(true)}
+              fullWidth
+            />
+          </View>
+          {exercises.length > 0 ? (
+            <View style={styles.templateAction}>
+              <Button
+                label={t('save_as_template')}
+                variant="secondary"
+                size="sm"
+                onPress={() => setIsSaveTemplateOpen(true)}
+                fullWidth
+              />
+            </View>
+          ) : null}
+        </View>
         {exercises.length > 0 ? (
           <Button
             label={t('clear_plan')}
@@ -218,6 +265,28 @@ const DayDetailScreen = () => {
         onConfirm={handleConfirmClear}
         onClose={() => setIsClearConfirmOpen(false)}
       />
+
+      <SaveTemplateSheet
+        visible={isSaveTemplateOpen}
+        onClose={() => setIsSaveTemplateOpen(false)}
+        exercises={exercises}
+      />
+
+      <ApplyTemplateSheet
+        visible={isApplyTemplateOpen}
+        onClose={() => setIsApplyTemplateOpen(false)}
+        onApply={handleApplyTemplate}
+      />
+
+      <ConfirmDialog
+        visible={pendingTemplate !== null}
+        title={t('overwrite_plan_title')}
+        message={t('overwrite_plan_desc')}
+        confirmLabel={t('apply')}
+        cancelLabel={t('cancel')}
+        onConfirm={handleConfirmOverwrite}
+        onClose={() => setPendingTemplate(null)}
+      />
     </ScreenContainer>
   );
 };
@@ -253,6 +322,13 @@ const styles = StyleSheet.create({
   },
   planActions: {
     gap: Spacing.two,
+  },
+  templateRow: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  templateAction: {
+    flex: 1,
   },
   limitHint: {
     fontFamily: Fonts.sans,

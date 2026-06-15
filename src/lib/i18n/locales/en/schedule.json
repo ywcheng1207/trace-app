@@ -36,5 +36,18 @@
   "metric_waist": "Waist (cm)",
   "metric_hips": "Hips (cm)",
   "note_placeholder": "e.g., Felt good today, high RPE on bench.",
-  "save_note": "Save Note"
+  "save_note": "Save Note",
+  "view_calendar": "Calendar",
+  "view_list": "List",
+  "list_empty_title": "Nothing this month yet",
+  "list_empty_desc": "Days with a plan, metrics, or notes will appear here.",
+  "clear_plan": "Clear Plan",
+  "clear_plan_title": "Clear this day's plan?",
+  "clear_plan_desc": "This removes all exercises arranged for this day and cannot be undone.",
+  "clear": "Clear",
+  "cancel": "Cancel",
+  "plan_limit_reached": "Daily exercise limit reached ({{max}})",
+  "guide_no_exercise_title": "Your library is empty",
+  "guide_no_exercise_desc": "Create exercises in Exercises first, then add them to the day's plan.",
+  "go_to_exercises": "Go to Exercises"
 }

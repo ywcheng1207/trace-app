@@ -36,5 +36,18 @@
   "metric_waist": "腰圍 (cm)",
   "metric_hips": "臀圍 (cm)",
   "note_placeholder": "例如：今天狀態不錯，臥推 RPE 偏高。",
-  "save_note": "儲存筆記"
+  "save_note": "儲存筆記",
+  "view_calendar": "月曆",
+  "view_list": "清單",
+  "list_empty_title": "本月還沒有資料",
+  "list_empty_desc": "安排計畫或記錄數值後，會在這裡列出。",
+  "clear_plan": "清空計畫",
+  "clear_plan_title": "清空當日計畫？",
+  "clear_plan_desc": "將移除這一天所有已安排的動作，此操作無法復原。",
+  "clear": "清空",
+  "cancel": "取消",
+  "plan_limit_reached": "已達單日動作數上限（{{max}}）",
+  "guide_no_exercise_title": "動作庫還是空的",
+  "guide_no_exercise_desc": "先到「訓練項目」建立動作，才能加入當日計畫。",
+  "go_to_exercises": "前往訓練項目"
 }

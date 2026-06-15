@@ -6,10 +6,12 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ScreenContainer } from '@/components/ui/screen-container';
 import { TextArea } from '@/components/ui/text-area';
 import { Fonts, Spacing } from '@/constants/theme';
+import { useExercises } from '@/features/exercises/api/hooks';
 import { Exercise } from '@/features/exercises/api/schemas';
 import {
   useBodyMetric,
@@ -18,7 +20,7 @@ import {
   useSaveDayNote,
   useSaveDayPlan,
 } from '@/features/schedule/api/hooks';
-import { PlanExercise } from '@/features/schedule/api/schemas';
+import { MAX_PLAN_EXERCISES, PlanExercise } from '@/features/schedule/api/schemas';
 import { BodyMetricsForm } from '@/features/schedule/components/body-metrics-form';
 import { ExercisePickerSheet } from '@/features/schedule/components/exercise-picker-sheet';
 import { PlanExerciseCard } from '@/features/schedule/components/plan-exercise-card';
@@ -37,6 +39,7 @@ const DayDetailScreen = () => {
   const { data: dayPlan } = useDayPlan(day);
   const { data: metric } = useBodyMetric(day);
   const { data: note } = useDayNote(day);
+  const { data: library } = useExercises();
   const saveDayPlan = useSaveDayPlan();
   const saveDayNote = useSaveDayNote();
 
@@ -45,6 +48,11 @@ const DayDetailScreen = () => {
   const [noteText, setNoteText] = useState(note ?? '');
   const [syncedNote, setSyncedNote] = useState(note);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
+  const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
+
+  const isLibraryEmpty = (library ?? []).length === 0;
+  const isAtPlanLimit = exercises.length >= MAX_PLAN_EXERCISES;
 
   // Re-sync local working copies when loaded data changes (adjust state during render).
   if (dayPlan !== syncedPlan) {
@@ -66,6 +74,24 @@ const DayDetailScreen = () => {
 
   const handleAddExercise = (exercise: Exercise) => {
     setExercises((prev) => [...prev, createPlanExercise(exercise)]);
+  };
+
+  const handleAddPress = () => {
+    if (isLibraryEmpty) {
+      setIsGuideOpen(true);
+      return;
+    }
+    setIsPickerOpen(true);
+  };
+
+  const handleConfirmClear = () => {
+    setExercises([]);
+    setIsClearConfirmOpen(false);
+  };
+
+  const handleGoToExercises = () => {
+    setIsGuideOpen(false);
+    router.push('/exercises');
   };
 
   const handleSavePlan = () => {
@@ -119,9 +145,23 @@ const DayDetailScreen = () => {
         <Button
           label={t('add_exercise')}
           variant="secondary"
-          onPress={() => setIsPickerOpen(true)}
+          onPress={handleAddPress}
+          disabled={isAtPlanLimit}
           fullWidth
         />
+        {isAtPlanLimit ? (
+          <Text style={[styles.limitHint, { color: theme.muted }]}>
+            {t('plan_limit_reached', { max: MAX_PLAN_EXERCISES })}
+          </Text>
+        ) : null}
+        {exercises.length > 0 ? (
+          <Button
+            label={t('clear_plan')}
+            variant="ghost"
+            onPress={() => setIsClearConfirmOpen(true)}
+            fullWidth
+          />
+        ) : null}
         <Button
           label={t('save_plan')}
           onPress={handleSavePlan}
@@ -156,6 +196,27 @@ const DayDetailScreen = () => {
         visible={isPickerOpen}
         onClose={() => setIsPickerOpen(false)}
         onSelect={handleAddExercise}
+      />
+
+      <ConfirmDialog
+        visible={isGuideOpen}
+        title={t('guide_no_exercise_title')}
+        message={t('guide_no_exercise_desc')}
+        confirmLabel={t('go_to_exercises')}
+        cancelLabel={t('cancel')}
+        onConfirm={handleGoToExercises}
+        onClose={() => setIsGuideOpen(false)}
+      />
+
+      <ConfirmDialog
+        visible={isClearConfirmOpen}
+        title={t('clear_plan_title')}
+        message={t('clear_plan_desc')}
+        confirmLabel={t('clear')}
+        cancelLabel={t('cancel')}
+        destructive
+        onConfirm={handleConfirmClear}
+        onClose={() => setIsClearConfirmOpen(false)}
       />
     </ScreenContainer>
   );
@@ -192,6 +253,11 @@ const styles = StyleSheet.create({
   },
   planActions: {
     gap: Spacing.two,
+  },
+  limitHint: {
+    fontFamily: Fonts.sans,
+    fontSize: 13,
+    textAlign: 'center',
   },
   noteSection: {
     gap: Spacing.three,

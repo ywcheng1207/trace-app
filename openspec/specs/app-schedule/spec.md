@@ -4,30 +4,40 @@
 TBD - created by archiving change app-schedule. Update Purpose after archive.
 ## Requirements
 ### Requirement: 月曆總覽
-`(tabs)/schedule` SHALL 以月曆網格呈現整月，提供上 / 下月切換與「今天」標示。每個日期格子 SHALL 依當日摘要顯示標記（是否有計畫、完成度、是否有身體數值、是否有筆記）。資料由 React Query（mock）提供，串接點標 `// TODO: apiFetch`。
 
-#### Scenario: 月份切換
-- **WHEN** 使用者點上 / 下月
-- **THEN** 網格更新為該月，並重新取得該月每日摘要
+`(tabs)/schedule` SHALL 以**觸控友善**的月曆呈現當月，並對齊 web 視覺：高格子（整格為點擊區）、日期靠上、底部以 chip 呈現當日「計畫 / 數值 / 筆記」狀態，今天以品牌橘外框 + 底色標示、過去日淡化。月份切換 SHALL 同時支援左右箭頭與水平滑動手勢。月曆 SHALL 提供「月曆 ↔ 清單」雙視圖切換。
 
-#### Scenario: 進入日詳情
-- **WHEN** 使用者點某一日
-- **THEN** 導向 `schedule/[day]` 顯示該日詳情
+#### Scenario: 觸控點選日期
+- **WHEN** 使用者點某一天（整格皆可點）
+- **THEN** 進入該日 `schedule/[day]` 詳情
+
+#### Scenario: 當日狀態 chip
+- **WHEN** 某天有計畫 / 身體數值 / 筆記
+- **THEN** 該格底部顯示對應 chip（計畫依完成度配色、數值綠、筆記黃）
+
+#### Scenario: 滑動換月
+- **WHEN** 使用者於月曆左右滑動
+- **THEN** 切換到上 / 下一個月（過場動畫），箭頭亦可達同效果
+
+#### Scenario: 雙視圖切換
+- **WHEN** 使用者切到「清單」視圖
+- **THEN** 改以日期清單列出有資料的天，點列進日詳情
 
 ### Requirement: 日詳情 — 訓練計畫
-`schedule/[day]` SHALL 提供當日訓練計畫編輯：從動作庫新增 PlanExercise、為每個動作新增 / 編輯 PlanSet（至少 weight / reps）、逐組勾選完成、移除動作或組數；整日計畫以單一儲存動作持久化（mock），並標 `// TODO: apiFetch`。
 
-#### Scenario: 新增動作至計畫
-- **WHEN** 使用者開啟動作挑選器並選擇一個動作
-- **THEN** 該動作加入當日計畫並帶一組空白組數
+`schedule/[day]` 的訓練計畫編排 SHALL 提供完成度勾選與引導對話框，且每日計畫動作數 SHALL 受上限約束。
 
-#### Scenario: 勾選完成與儲存
-- **WHEN** 使用者勾選組數完成並儲存
-- **THEN** 計畫持久化，月曆該日完成度更新
+#### Scenario: 缺動作引導
+- **WHEN** 使用者要新增計畫但動作庫為空
+- **THEN** 顯示引導對話框，導向 Exercises 新增動作
 
-#### Scenario: 空計畫
-- **WHEN** 當日尚無計畫
-- **THEN** 顯示空狀態與新增動作入口
+#### Scenario: 清空計畫確認
+- **WHEN** 使用者清空當日計畫
+- **THEN** 先顯示確認對話框，確認後才清空
+
+#### Scenario: 計畫上限
+- **WHEN** 當日計畫動作數達上限
+- **THEN** 新增鈕停用並提示已達上限
 
 ### Requirement: 日詳情 — 身體數值
 `schedule/[day]` SHALL 提供當日身體數值表單（weight / bodyFat / muscleMass / chest / waist / hips，皆選填），可儲存（mock）。每個日期一份數值。

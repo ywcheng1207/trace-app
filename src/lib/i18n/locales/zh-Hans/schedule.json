@@ -36,5 +36,18 @@
   "metric_waist": "腰围 (cm)",
   "metric_hips": "臀围 (cm)",
   "note_placeholder": "例如：今天状态不错，卧推 RPE 偏高。",
-  "save_note": "保存笔记"
+  "save_note": "保存笔记",
+  "view_calendar": "月历",
+  "view_list": "清单",
+  "list_empty_title": "本月还没有数据",
+  "list_empty_desc": "安排计划或记录数值后，会在这里列出。",
+  "clear_plan": "清空计划",
+  "clear_plan_title": "清空当日计划？",
+  "clear_plan_desc": "将移除这一天所有已安排的动作，此操作无法复原。",
+  "clear": "清空",
+  "cancel": "取消",
+  "plan_limit_reached": "已达单日动作数上限（{{max}}）",
+  "guide_no_exercise_title": "动作库还是空的",
+  "guide_no_exercise_desc": "先到「训练项目」建立动作，才能加入当日计划。",
+  "go_to_exercises": "前往训练项目"
 }

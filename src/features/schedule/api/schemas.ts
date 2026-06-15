@@ -27,6 +27,8 @@ export const trainingPlanSchema = z.object({
 });
 export type TrainingPlan = z.infer<typeof trainingPlanSchema>;
 
+export const MAX_PLAN_EXERCISES = 12;
+
 export const BODY_METRIC_FIELDS = [
   'weight',
   'bodyFat',

@@ -1,7 +1,15 @@
 import { format } from 'date-fns';
 import { ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { Card } from '@/components/ui/card';
 import { Fonts, Spacing } from '@/constants/theme';
@@ -19,6 +27,7 @@ type CalendarMonthProps = {
 };
 
 const WEEKDAY_INDEXES = [0, 1, 2, 3, 4, 5, 6];
+const SWIPE_THRESHOLD = 50;
 
 export const CalendarMonth = ({
   month,
@@ -29,7 +38,25 @@ export const CalendarMonth = ({
 }: CalendarMonthProps) => {
   const { t } = useTranslation('schedule');
   const theme = useTheme();
+  const opacity = useSharedValue(1);
+  const gridStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
+
   const days = buildMonthGrid(month);
+
+  const swipe = Gesture.Pan()
+    .activeOffsetX([-20, 20])
+    .onEnd((event) => {
+      'worklet';
+      if (event.translationX > SWIPE_THRESHOLD) runOnJS(onPrev)();
+      else if (event.translationX < -SWIPE_THRESHOLD) runOnJS(onNext)();
+    });
+
+  useEffect(() => {
+    /* eslint-disable react-hooks/immutability */
+    opacity.value = 0.35;
+    opacity.value = withTiming(1, { duration: 220 });
+    /* eslint-enable react-hooks/immutability */
+  }, [month, opacity]);
 
   return (
     <Card>
@@ -37,9 +64,7 @@ export const CalendarMonth = ({
         <Pressable onPress={onPrev} hitSlop={8}>
           <ChevronLeft color={theme.text} size={22} />
         </Pressable>
-        <Text style={[styles.monthLabel, { color: theme.text }]}>
-          {format(month, 'yyyy / MM')}
-        </Text>
+        <Text style={[styles.monthLabel, { color: theme.text }]}>{format(month, 'yyyy / MM')}</Text>
         <Pressable onPress={onNext} hitSlop={8}>
           <ChevronRight color={theme.text} size={22} />
         </Pressable>
@@ -53,16 +78,20 @@ export const CalendarMonth = ({
         ))}
       </View>
 
-      <View style={styles.grid}>
-        {days.map((day) => (
-          <DayCell
-            key={day.key}
-            day={day}
-            summary={summaries.get(day.key)}
-            onPress={() => onSelectDay(day.key)}
-          />
-        ))}
-      </View>
+      <GestureDetector gesture={swipe}>
+        <Animated.View style={gridStyle}>
+          <View style={styles.grid}>
+            {days.map((day) => (
+              <DayCell
+                key={day.key}
+                day={day}
+                summary={summaries.get(day.key)}
+                onPress={() => onSelectDay(day.key)}
+              />
+            ))}
+          </View>
+        </Animated.View>
+      </GestureDetector>
     </Card>
   );
 };

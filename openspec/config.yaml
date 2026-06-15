@@ -1,20 +1,30 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  trace-app — the React Native mobile client for the Trace fitness platform.
+  It is a pure client that consumes the encrypted API of the `trace` (Next.js web) backend.
+  There is NO API route / server layer in this project.
+
+  Tech stack:
+  - Expo SDK 56 + React Native 0.85, expo-router (file-based routing, typed routes)
+  - React 19.2 with React Compiler enabled (do not hand-write useMemo/useCallback/memo)
+  - TypeScript (strict). No `any`/`as`/non-null `!`. No Prisma — data types come from
+    Zod schemas (`z.infer`) modeling the backend API contract.
+  - Server State: React Query (@tanstack/react-query). Global UI state: Redux Toolkit
+    (+ redux-persist via AsyncStorage). Forms: React Hook Form + Zod (zodResolver).
+  - Styling: StyleSheet + design tokens in `src/constants/theme.ts` (Colors/Fonts/Spacing)
+    via `useTheme()`. No Tailwind / NativeWind / shadcn. No hardcoded hex / magic numbers.
+  - Storage: expo-secure-store for tokens/secrets; AsyncStorage for non-sensitive prefs only.
+  - i18n: i18next + react-i18next + expo-localization, 3 locales (zh-Hant / zh-Hans / en).
+  - Deployment: EAS Build / Submit / Update (OTA).
+
+  Conventions live in `.claude/skills/*` and are summarized in `CLAUDE.md`. Follow them.
+  File names are kebab-case (expo-router convention). Component names stay PascalCase.
+
+  Git: conventional commits, Traditional-Chinese subject lines (e.g. `feat(auth): ...`),
+  matching the `trace` repo style.
 
 # Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+# rules:
+#   tasks:
+#     - Break tasks into chunks of max 2 hours

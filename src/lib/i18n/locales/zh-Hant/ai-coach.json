@@ -1,0 +1,20 @@
+{
+  "ai_coach": "AI 教練",
+  "daily_quota": "今日剩餘額度 {{remaining}} / {{limit}}",
+  "advice_title": "動作 AI 建議",
+  "get_advice": "取得 AI 建議",
+  "analysis_title": "訓練影片分析",
+  "analysis_hint": "選一段不超過 {{max}} 秒的動作影片，AI 會給出動作分解與建議。",
+  "analyze_video": "分析動作影片",
+  "video_too_long": "影片過長，請選擇 {{max}} 秒以內的片段。",
+  "analysis_in_progress": "這個動作的影片分析正在進行中，請稍候。",
+  "quota_reached": "已達今日 AI 額度，請明天再試。",
+  "status_pending": "已送出，等待處理中...",
+  "status_processing": "AI 分析中...",
+  "status_done": "分析完成",
+  "status_failed": "分析失敗，請稍後再試",
+  "result_breakdown": "動作分解",
+  "result_suggestions": "調整建議",
+  "analysis_done_title": "AI 動作分析完成",
+  "analysis_done_message": "你的動作影片分析已完成，點擊查看建議。"
+}

@@ -12,4 +12,6 @@ export const QUERY_KEYS = {
   stats: (rangeKey: string) => ['stats', rangeKey] as const,
   notifications: () => ['notifications'] as const,
   trainingTemplates: () => ['training-templates'] as const,
+  aiUsage: () => ['ai-coach', 'usage'] as const,
+  analysisTask: (id: string) => ['ai-coach', 'task', id] as const,
 } as const;

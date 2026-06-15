@@ -14,6 +14,7 @@ import { Loading } from '@/components/ui/loading';
 import { ScreenContainer } from '@/components/ui/screen-container';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useArchiveExercise, useExercise, useExerciseUsage } from '@/features/exercises/api/hooks';
+import { AiCoachSheet } from '@/features/ai-coach/components/ai-coach-sheet';
 import { ExerciseFormSheet } from '@/features/exercises/components/exercise-form-sheet';
 import { ExerciseVideoSection } from '@/features/exercises/components/exercise-video-section';
 import { useTheme } from '@/hooks/use-theme';
@@ -31,6 +32,7 @@ const ExerciseDetailScreen = () => {
   const archiveExercise = useArchiveExercise();
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isArchiveConfirmOpen, setIsArchiveConfirmOpen] = useState(false);
+  const [isAiCoachOpen, setIsAiCoachOpen] = useState(false);
 
   const usageCount = usage?.planCount ?? 0;
   const archiveMessage =
@@ -50,7 +52,7 @@ const ExerciseDetailScreen = () => {
   };
 
   const handleAiAdvice = () => {
-    dispatch(showNotification({ type: 'info', message: t('common:comingSoon') }));
+    setIsAiCoachOpen(true);
   };
 
   const handleEditNote = () => {
@@ -166,6 +168,12 @@ const ExerciseDetailScreen = () => {
         destructive
         onConfirm={handleConfirmArchive}
         onClose={() => setIsArchiveConfirmOpen(false)}
+      />
+
+      <AiCoachSheet
+        visible={isAiCoachOpen}
+        onClose={() => setIsAiCoachOpen(false)}
+        exerciseId={exercise.id}
       />
     </ScreenContainer>
   );

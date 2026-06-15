@@ -2,6 +2,7 @@ import { getLocales } from 'expo-localization';
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
+import enAiCoach from '@/lib/i18n/locales/en/ai-coach.json';
 import enAuth from '@/lib/i18n/locales/en/auth.json';
 import enCommon from '@/lib/i18n/locales/en/common.json';
 import enExercises from '@/lib/i18n/locales/en/exercises.json';
@@ -11,6 +12,7 @@ import enNotify from '@/lib/i18n/locales/en/notify.json';
 import enSchedule from '@/lib/i18n/locales/en/schedule.json';
 import enSetting from '@/lib/i18n/locales/en/setting.json';
 import enStatistics from '@/lib/i18n/locales/en/statistics.json';
+import zhHansAiCoach from '@/lib/i18n/locales/zh-Hans/ai-coach.json';
 import zhHansAuth from '@/lib/i18n/locales/zh-Hans/auth.json';
 import zhHansCommon from '@/lib/i18n/locales/zh-Hans/common.json';
 import zhHansExercises from '@/lib/i18n/locales/zh-Hans/exercises.json';
@@ -20,6 +22,7 @@ import zhHansNotify from '@/lib/i18n/locales/zh-Hans/notify.json';
 import zhHansSchedule from '@/lib/i18n/locales/zh-Hans/schedule.json';
 import zhHansSetting from '@/lib/i18n/locales/zh-Hans/setting.json';
 import zhHansStatistics from '@/lib/i18n/locales/zh-Hans/statistics.json';
+import zhHantAiCoach from '@/lib/i18n/locales/zh-Hant/ai-coach.json';
 import zhHantAuth from '@/lib/i18n/locales/zh-Hant/auth.json';
 import zhHantCommon from '@/lib/i18n/locales/zh-Hant/common.json';
 import zhHantExercises from '@/lib/i18n/locales/zh-Hant/exercises.json';
@@ -41,6 +44,7 @@ const resources = {
     schedule: zhHantSchedule,
     statistics: zhHantStatistics,
     setting: zhHantSetting,
+    'ai-coach': zhHantAiCoach,
   },
   'zh-Hans': {
     common: zhHansCommon,
@@ -52,6 +56,7 @@ const resources = {
     schedule: zhHansSchedule,
     statistics: zhHansStatistics,
     setting: zhHansSetting,
+    'ai-coach': zhHansAiCoach,
   },
   en: {
     common: enCommon,
@@ -63,6 +68,7 @@ const resources = {
     schedule: enSchedule,
     statistics: enStatistics,
     setting: enSetting,
+    'ai-coach': enAiCoach,
   },
 } as const;
 
@@ -76,6 +82,7 @@ const NAMESPACES = [
   'schedule',
   'statistics',
   'setting',
+  'ai-coach',
 ] as const;
 
 type SupportedLocale = 'zh-Hant' | 'zh-Hans' | 'en';

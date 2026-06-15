@@ -1,0 +1,20 @@
+{
+  "ai_coach": "AI 教练",
+  "daily_quota": "今日剩余额度 {{remaining}} / {{limit}}",
+  "advice_title": "动作 AI 建议",
+  "get_advice": "获取 AI 建议",
+  "analysis_title": "训练视频分析",
+  "analysis_hint": "选一段不超过 {{max}} 秒的动作视频，AI 会给出动作分解与建议。",
+  "analyze_video": "分析动作视频",
+  "video_too_long": "视频过长，请选择 {{max}} 秒以内的片段。",
+  "analysis_in_progress": "这个动作的视频分析正在进行中，请稍候。",
+  "quota_reached": "已达今日 AI 额度，请明天再试。",
+  "status_pending": "已送出，等待处理中...",
+  "status_processing": "AI 分析中...",
+  "status_done": "分析完成",
+  "status_failed": "分析失败，请稍后再试",
+  "result_breakdown": "动作分解",
+  "result_suggestions": "调整建议",
+  "analysis_done_title": "AI 动作分析完成",
+  "analysis_done_message": "你的动作视频分析已完成，点击查看建议。"
+}

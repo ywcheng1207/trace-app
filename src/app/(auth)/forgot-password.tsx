@@ -40,7 +40,7 @@ const ForgotPasswordScreen = () => {
             {t('resetLinkSentMessage')}
           </Text>
           <Link href="/login">
-            <Text style={[styles.linkText, { color: theme.primary }]}>{t('backToLogin')}</Text>
+            <Text style={[styles.linkText, { color: theme.accent }]}>{t('backToLogin')}</Text>
           </Link>
         </View>
       </ScreenContainer>
@@ -81,7 +81,7 @@ const ForgotPasswordScreen = () => {
       />
 
       <Link href="/login" style={styles.center}>
-        <Text style={[styles.linkText, { color: theme.primary }]}>{t('backToLogin')}</Text>
+        <Text style={[styles.linkText, { color: theme.accent }]}>{t('backToLogin')}</Text>
       </Link>
     </ScreenContainer>
   );

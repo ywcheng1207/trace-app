@@ -82,7 +82,7 @@ export const PlanExerciseCard = ({ exercise, onChange, onRemove }: PlanExerciseC
       ))}
 
       <Pressable onPress={addSet} style={styles.addSet}>
-        <Text style={[styles.addSetText, { color: theme.primary }]}>+ {t('add_set')}</Text>
+        <Text style={[styles.addSetText, { color: theme.accent }]}>+ {t('add_set')}</Text>
       </Pressable>
     </Card>
   );

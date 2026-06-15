@@ -62,8 +62,8 @@ const ArchivedExercisesScreen = () => {
     <SafeAreaView style={[styles.safe, { backgroundColor: theme.background }]} edges={['top']}>
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.backRow} hitSlop={8}>
-          <ChevronLeft color={theme.primary} size={20} />
-          <Text style={[styles.backText, { color: theme.primary }]}>{t('back')}</Text>
+          <ChevronLeft color={theme.accent} size={20} />
+          <Text style={[styles.backText, { color: theme.accent }]}>{t('back')}</Text>
         </Pressable>
         <PageHeader title={t('archived_exercises')} subtitle={t('archived_subtitle')} />
       </View>

@@ -23,7 +23,7 @@ export const DayCell = ({ day, summary, onPress }: DayCellProps) => {
 
   return (
     <Pressable onPress={onPress} style={styles.cell}>
-      <View style={[styles.inner, day.isToday ? { backgroundColor: theme.primary } : null]}>
+      <View style={[styles.inner, day.isToday ? { backgroundColor: theme.accent } : null]}>
         <Text style={[styles.number, { color: numberColor }]}>{format(day.date, 'd')}</Text>
       </View>
       <View style={styles.dots}>

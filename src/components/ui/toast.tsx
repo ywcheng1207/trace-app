@@ -25,7 +25,7 @@ export const Toast = () => {
   const colorByType = {
     success: theme.success,
     error: theme.danger,
-    info: theme.primary,
+    info: theme.info,
   };
   const accent = colorByType[notification.type];
 
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginTop: Spacing.two,
     paddingVertical: Spacing.three,
     paddingHorizontal: Spacing.three,
-    borderRadius: Radius.md,
+    borderRadius: Radius.sheet,
     borderWidth: 1,
   },
   accent: {

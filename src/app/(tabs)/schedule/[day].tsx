@@ -88,8 +88,8 @@ const DayDetailScreen = () => {
   return (
     <ScreenContainer scroll>
       <Pressable onPress={() => router.back()} style={styles.backRow} hitSlop={8}>
-        <ChevronLeft color={theme.primary} size={20} />
-        <Text style={[styles.backText, { color: theme.primary }]}>{t('back')}</Text>
+        <ChevronLeft color={theme.accent} size={20} />
+        <Text style={[styles.backText, { color: theme.accent }]}>{t('back')}</Text>
       </Pressable>
 
       <View>

@@ -74,7 +74,7 @@ const LoginScreen = () => {
       />
 
       <Link href="/forgot-password" style={styles.linkRight}>
-        <Text style={[styles.linkText, { color: theme.primary }]}>{t('forgotPasswordLink')}</Text>
+        <Text style={[styles.linkText, { color: theme.accent }]}>{t('forgotPasswordLink')}</Text>
       </Link>
 
       <Button label={t('loginButton')} onPress={onSubmit} loading={login.isPending} fullWidth />
@@ -82,7 +82,7 @@ const LoginScreen = () => {
       <View style={styles.footer}>
         <Text style={[styles.footerText, { color: theme.textSecondary }]}>{t('noAccount')}</Text>
         <Link href="/register">
-          <Text style={[styles.linkText, { color: theme.primary }]}>{t('registerButton')}</Text>
+          <Text style={[styles.linkText, { color: theme.accent }]}>{t('registerButton')}</Text>
         </Link>
       </View>
     </ScreenContainer>

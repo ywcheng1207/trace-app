@@ -4,15 +4,20 @@
 TBD - created by archiving change app-setting. Update Purpose after archive.
 ## Requirements
 ### Requirement: 個人資料編輯
-`(tabs)/setting` SHALL 提供個人資料編輯（顯示名稱、性別、身高），以 React Hook Form + Zod 驗證，提交後（mock）更新並反映於設定頁，串接點標 `// TODO: apiFetch`。
 
-#### Scenario: 更新資料
-- **WHEN** 使用者編輯顯示名稱並儲存
-- **THEN** 設定頁顯示更新後的資料並出現成功 notify
+設定頁 SHALL 允許編輯個人資料：顯示名稱、頭像、生日、時區與既有欄位。頭像更換提供選圖 UI（實際上傳 stub，標 `// TODO: apiFetch`）；生日以 DatePicker 選擇；時區以 Select 選擇。變更後（mock）即時反映。
 
-#### Scenario: 顯示名稱驗證
-- **WHEN** 顯示名稱為空或過長
-- **THEN** 顯示欄位錯誤，不提交
+#### Scenario: 更換頭像
+- **WHEN** 使用者選新圖片並儲存
+- **THEN** 個人資料頭像更新為預覽圖（上傳行為先 stub）
+
+#### Scenario: 設定生日
+- **WHEN** 使用者以 DatePicker 選生日並儲存
+- **THEN** 個人資料顯示該生日
+
+#### Scenario: 設定時區
+- **WHEN** 使用者選時區並儲存
+- **THEN** 個人資料記錄該時區
 
 ### Requirement: 語系切換
 設定頁 SHALL 允許切換介面語系（en / zh-Hant / zh-Hans），選定後即時套用（`i18n.changeLanguage`）並持久化偏好。

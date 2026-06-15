@@ -36,7 +36,13 @@
         }
       ],
       "expo-localization",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "允許 trace 存取相簿以更換你的個人頭像。"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

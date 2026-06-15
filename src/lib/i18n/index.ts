@@ -2,15 +2,59 @@ import { getLocales } from 'expo-localization';
 import { createInstance } from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-import en from '@/lib/i18n/locales/en/common.json';
-import zhHans from '@/lib/i18n/locales/zh-Hans/common.json';
-import zhHant from '@/lib/i18n/locales/zh-Hant/common.json';
+import enAuth from '@/lib/i18n/locales/en/auth.json';
+import enCommon from '@/lib/i18n/locales/en/common.json';
+import enExercises from '@/lib/i18n/locales/en/exercises.json';
+import enMuscle from '@/lib/i18n/locales/en/muscle.json';
+import enNav from '@/lib/i18n/locales/en/nav.json';
+import enNotify from '@/lib/i18n/locales/en/notify.json';
+import enSchedule from '@/lib/i18n/locales/en/schedule.json';
+import zhHansAuth from '@/lib/i18n/locales/zh-Hans/auth.json';
+import zhHansCommon from '@/lib/i18n/locales/zh-Hans/common.json';
+import zhHansExercises from '@/lib/i18n/locales/zh-Hans/exercises.json';
+import zhHansMuscle from '@/lib/i18n/locales/zh-Hans/muscle.json';
+import zhHansNav from '@/lib/i18n/locales/zh-Hans/nav.json';
+import zhHansNotify from '@/lib/i18n/locales/zh-Hans/notify.json';
+import zhHansSchedule from '@/lib/i18n/locales/zh-Hans/schedule.json';
+import zhHantAuth from '@/lib/i18n/locales/zh-Hant/auth.json';
+import zhHantCommon from '@/lib/i18n/locales/zh-Hant/common.json';
+import zhHantExercises from '@/lib/i18n/locales/zh-Hant/exercises.json';
+import zhHantMuscle from '@/lib/i18n/locales/zh-Hant/muscle.json';
+import zhHantNav from '@/lib/i18n/locales/zh-Hant/nav.json';
+import zhHantNotify from '@/lib/i18n/locales/zh-Hant/notify.json';
+import zhHantSchedule from '@/lib/i18n/locales/zh-Hant/schedule.json';
 
 const resources = {
-  'zh-Hant': { common: zhHant },
-  'zh-Hans': { common: zhHans },
-  en: { common: en },
+  'zh-Hant': {
+    common: zhHantCommon,
+    nav: zhHantNav,
+    auth: zhHantAuth,
+    notify: zhHantNotify,
+    exercises: zhHantExercises,
+    muscle: zhHantMuscle,
+    schedule: zhHantSchedule,
+  },
+  'zh-Hans': {
+    common: zhHansCommon,
+    nav: zhHansNav,
+    auth: zhHansAuth,
+    notify: zhHansNotify,
+    exercises: zhHansExercises,
+    muscle: zhHansMuscle,
+    schedule: zhHansSchedule,
+  },
+  en: {
+    common: enCommon,
+    nav: enNav,
+    auth: enAuth,
+    notify: enNotify,
+    exercises: enExercises,
+    muscle: enMuscle,
+    schedule: enSchedule,
+  },
 } as const;
+
+const NAMESPACES = ['common', 'nav', 'auth', 'notify', 'exercises', 'muscle', 'schedule'] as const;
 
 type SupportedLocale = 'zh-Hant' | 'zh-Hans' | 'en';
 
@@ -37,7 +81,7 @@ void i18n.use(initReactI18next).init({
   resources,
   lng: detectLocale(),
   fallbackLng: FALLBACK_LOCALE,
-  ns: ['common'],
+  ns: NAMESPACES,
   defaultNS: 'common',
   interpolation: { escapeValue: false },
 });

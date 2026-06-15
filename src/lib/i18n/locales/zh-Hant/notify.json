@@ -1,0 +1,15 @@
+{
+  "login_failed": "電子郵件或密碼不正確",
+  "logout_success": "已登出",
+  "register_success": "帳號建立成功",
+  "reset_email_sent": "若此電子郵件已註冊，您將收到重設密碼的連結",
+  "update_success": "更新成功",
+  "update_fail": "更新失敗",
+  "create_success": "新增成功",
+  "create_fail": "新增失敗",
+  "delete_success": "刪除成功",
+  "delete_fail": "刪除失敗",
+  "save_success": "儲存成功",
+  "save_fail": "儲存失敗",
+  "error_occurred": "發生錯誤，請稍後再試"
+}

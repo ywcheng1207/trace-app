@@ -1,0 +1,15 @@
+{
+  "login_failed": "Invalid email or password",
+  "logout_success": "Logged out",
+  "register_success": "Account created",
+  "reset_email_sent": "If this email is registered, you will receive a reset link",
+  "update_success": "Updated",
+  "update_fail": "Update failed",
+  "create_success": "Created",
+  "create_fail": "Create failed",
+  "delete_success": "Deleted",
+  "delete_fail": "Delete failed",
+  "save_success": "Saved",
+  "save_fail": "Save failed",
+  "error_occurred": "Something went wrong, please try again later"
+}

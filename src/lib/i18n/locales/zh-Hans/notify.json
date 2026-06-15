@@ -1,0 +1,15 @@
+{
+  "login_failed": "电子邮件或密码不正确",
+  "logout_success": "已登出",
+  "register_success": "账号创建成功",
+  "reset_email_sent": "若此电子邮件已注册，您将收到重置密码的链接",
+  "update_success": "更新成功",
+  "update_fail": "更新失败",
+  "create_success": "新增成功",
+  "create_fail": "新增失败",
+  "delete_success": "删除成功",
+  "delete_fail": "删除失败",
+  "save_success": "保存成功",
+  "save_fail": "保存失败",
+  "error_occurred": "发生错误，请稍后再试"
+}

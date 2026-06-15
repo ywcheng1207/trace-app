@@ -1,3 +1,14 @@
 {
-  "appName": "Trace"
+  "appName": "Trace",
+  "cancel": "取消",
+  "save": "儲存",
+  "delete": "刪除",
+  "back": "返回",
+  "confirm": "確認",
+  "ok": "好的",
+  "retry": "重試",
+  "loading": "載入中...",
+  "total": "總計",
+  "comingSoon": "即將推出",
+  "comingSoonDesc": "此區塊即將開發。"
 }

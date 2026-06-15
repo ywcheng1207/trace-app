@@ -1,0 +1,74 @@
+import { useMutation, useQuery } from '@tanstack/react-query';
+
+import {
+  mockArchiveExercise,
+  mockCreateExercise,
+  mockGetExercise,
+  mockListArchived,
+  mockListExercises,
+  mockPurgeExercise,
+  mockRestoreExercise,
+  mockUpdateExercise,
+} from '@/features/exercises/api/mock';
+import { ExerciseFormValues } from '@/features/exercises/api/schemas';
+import { queryClient } from '@/lib/query/query-client';
+import { QUERY_KEYS } from '@/lib/query/query-keys';
+
+const invalidateLists = () => {
+  void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.exercises() });
+  void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.archivedExercises() });
+};
+
+export const useExercises = () => {
+  // TODO: 換成 apiFetch('/api/exercises', { schema })
+  return useQuery({ queryKey: QUERY_KEYS.exercises(), queryFn: () => mockListExercises() });
+};
+
+export const useArchivedExercises = () => {
+  // TODO: 換成 apiFetch('/api/exercises?archived=1', { schema })
+  return useQuery({
+    queryKey: QUERY_KEYS.archivedExercises(),
+    queryFn: () => mockListArchived(),
+  });
+};
+
+export const useExercise = (id: string) => {
+  // TODO: 換成 apiFetch('/api/exercises/[id]', { schema })
+  return useQuery({
+    queryKey: QUERY_KEYS.exerciseDetail(id),
+    queryFn: () => mockGetExercise(id),
+  });
+};
+
+export const useCreateExercise = () => {
+  return useMutation({
+    mutationFn: (values: ExerciseFormValues) => mockCreateExercise(values),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.exercises() }),
+  });
+};
+
+export const useUpdateExercise = () => {
+  return useMutation({
+    mutationFn: (input: { id: string; values: ExerciseFormValues }) =>
+      mockUpdateExercise(input.id, input.values),
+    onSuccess: (_result, input) => {
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.exercises() });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.exerciseDetail(input.id) });
+    },
+  });
+};
+
+export const useArchiveExercise = () => {
+  return useMutation({ mutationFn: (id: string) => mockArchiveExercise(id), onSuccess: invalidateLists });
+};
+
+export const useRestoreExercise = () => {
+  return useMutation({ mutationFn: (id: string) => mockRestoreExercise(id), onSuccess: invalidateLists });
+};
+
+export const usePurgeExercise = () => {
+  return useMutation({
+    mutationFn: (id: string) => mockPurgeExercise(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: QUERY_KEYS.archivedExercises() }),
+  });
+};

@@ -8,7 +8,7 @@ export const QUERY_KEYS = {
   dayPlan: (date: string) => ['schedule', 'plan', date] as const,
   bodyMetric: (date: string) => ['schedule', 'metric', date] as const,
   dayNote: (date: string) => ['schedule', 'note', date] as const,
-  stats: (rangeDays: number) => ['stats', rangeDays] as const,
+  stats: (rangeKey: string) => ['stats', rangeKey] as const,
   notifications: () => ['notifications'] as const,
   trainingTemplates: () => ['training-templates'] as const,
 } as const;

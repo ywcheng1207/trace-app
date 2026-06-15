@@ -14,5 +14,19 @@
   "body_section": "Body",
   "weight_trend": "Weight Trend",
   "body_fat_trend": "Body Fat Trend",
-  "body_no_data": "No body data for this period"
+  "body_no_data": "No body data for this period",
+  "range_custom": "Custom",
+  "range_start": "Start",
+  "range_end": "End",
+  "insights_section": "Insights",
+  "insight_orientation_title": "Training Orientation",
+  "insight_orientation_strength": "Your training leans toward Strength",
+  "insight_orientation_hypertrophy": "Your training leans toward Hypertrophy",
+  "insight_orientation_endurance": "Your training leans toward Endurance",
+  "insight_orientation_evidence": "Most sets fall in the matching weight / rep range, about {{pct}}%.",
+  "insight_balance_title": "Muscle Balance",
+  "insight_balance_conclusion": "{{top}} is overemphasized, {{bottom}} is relatively undertrained",
+  "insight_balance_evidence": "Highest share {{topPct}}%, lowest {{bottomPct}}% — consider adding work to the lagging area.",
+  "training_no_data_desc": "No completed training in this period — go plan a session.",
+  "body_no_data_desc": "No body metrics recorded in this period."
 }

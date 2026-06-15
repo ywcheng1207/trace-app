@@ -14,5 +14,19 @@
   "body_section": "身体数据",
   "weight_trend": "体重趋势",
   "body_fat_trend": "体脂趋势",
-  "body_no_data": "此区间无身体数据"
+  "body_no_data": "此区间无身体数据",
+  "range_custom": "自订",
+  "range_start": "起始日",
+  "range_end": "结束日",
+  "insights_section": "洞察",
+  "insight_orientation_title": "训练取向",
+  "insight_orientation_strength": "你的训练偏向 力量",
+  "insight_orientation_hypertrophy": "你的训练偏向 增肌",
+  "insight_orientation_endurance": "你的训练偏向 肌耐力",
+  "insight_orientation_evidence": "主要组数落在对应的重量 / 次数区间，占比约 {{pct}}%。",
+  "insight_balance_title": "肌群均衡度",
+  "insight_balance_conclusion": "{{top}} 训练量偏高，{{bottom}} 相对不足",
+  "insight_balance_evidence": "占比最高 {{topPct}}%、最低 {{bottomPct}}%，可考虑补强较少的部位。",
+  "training_no_data_desc": "此区间没有已完成的训练，先去安排计划吧。",
+  "body_no_data_desc": "此区间没有身体数值记录。"
 }

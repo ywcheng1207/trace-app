@@ -1,3 +1,14 @@
 {
-  "appName": "Trace"
+  "appName": "Trace",
+  "cancel": "Cancel",
+  "save": "Save",
+  "delete": "Delete",
+  "back": "Back",
+  "confirm": "Confirm",
+  "ok": "OK",
+  "retry": "Retry",
+  "loading": "Loading...",
+  "total": "Total",
+  "comingSoon": "Coming soon",
+  "comingSoonDesc": "This section is being built next."
 }

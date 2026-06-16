@@ -23,10 +23,10 @@
 
 ## 4. Exercises 肌群選取器重寫
 
-- [ ] 4.1 新增 `src/features/exercises/components/muscle-polygon-anatomy.tsx`：用 `react-native-svg` 的 `<Polygon>` 渲染 body-map.ts 的 polygon 資料（正面/背面切換，region 顏色三態：muted / primary/60 / primary）
-- [ ] 4.2 新增 `src/features/exercises/components/muscle-drill-sheet.tsx`：接收 `regionKey`，顯示該 region 細項肌群 chips（選取 / 取消），確認按鈕關閉 Sheet
-- [ ] 4.3 重寫 `src/features/exercises/components/muscle-selector.tsx`：整合 `MusclePolygonAnatomy` + 點擊 region → 開啟 `MuscleDrillSheet`，移除舊的平鋪 chips 設計
-- [ ] 4.4 更新 `src/lib/i18n/locales/*/muscle.json` 三語系：確認 region key 對應 body-map.ts 的命名，補齊缺少的 key
+- [x] 4.1 新增 `src/features/exercises/components/muscle-polygon-anatomy.tsx`：用 `react-native-svg` 的 `<Polygon>` 渲染 body-map.ts 的 polygon 資料（正面/背面切換，region 顏色三態：muted / primary/60 / primary）
+- [x] 4.2 新增 `src/features/exercises/components/muscle-drill-sheet.tsx`：接收 `regionKey`，顯示該 region 細項肌群 chips（選取 / 取消），確認按鈕關閉 Sheet
+- [x] 4.3 重寫 `src/features/exercises/components/muscle-selector.tsx`：整合 `MusclePolygonAnatomy` + 點擊 region → 開啟 `MuscleDrillSheet`，移除舊的平鋪 chips 設計
+- [x] 4.4 更新 i18n 三語系：polygon 對應 app 既有 6 大區（chest/back/shoulders/arms/legs/core），exercises.json 補 selected/clear/select_all_region/select_region_hint key
 
 ## 5. Statistics 統計頁重設計
 

@@ -1,25 +1,25 @@
 ## 1. 圖資與共用元件基礎
 
-- [ ] 1.1 複製 web `assets/squat.gif`、`assets/logo/logo-small-human.png`、`public/assets/mascot1.png` 到 `assets/images/mascot/`
-- [ ] 1.2 新增 `src/components/ui/brand-label.tsx`（BrandLabel 元件，對齊 web `BrandLabel.tsx` 字型與樣式）
-- [ ] 1.3 修正 `src/components/ui/text-field.tsx`：error 區改為固定 `minHeight: 18`，無 error 時以 `opacity: 0` 佔位，杜絕 layout shift
-- [ ] 1.4 移植 web 的 polygon body-map 資料到 `src/lib/constants/body-map.ts`（ANTERIOR_POLYGONS、POSTERIOR_POLYGONS、region 對應、MUSCLE_TO_REGION 映射）
+- [x] 1.1 複製 web `assets/squat.gif`、`assets/logo/logo-small-human.png`、`public/assets/mascot1.png` 到 `assets/images/mascot/`
+- [x] 1.2 新增 `src/components/ui/brand-label.tsx`（BrandLabel 元件，對齊 web `BrandLabel.tsx` 字型與樣式）
+- [x] 1.3 修正 `src/components/ui/text-field.tsx`：error 區改為固定 `minHeight: 18`，無 error 時以 `opacity: 0` 佔位，杜絕 layout shift
+- [x] 1.4 移植 web 的 polygon body-map 資料到 `src/lib/constants/body-map.ts`（ANTERIOR_POLYGONS、POSTERIOR_POLYGONS、region 對應、MUSCLE_TO_REGION 映射）
 
 ## 2. Auth 進入點重設計
 
-- [ ] 2.1 重寫 `src/app/(auth)/login.tsx`：移除「歡迎回來」大標題，頂部加入 mascot（expo-image GIF 或備援 PNG）+ BrandLabel
-- [ ] 2.2 在 login.tsx 實作 animated tab bar（Login / Register 底部滑動線），含 Animated.Value 控制 indicator 位移
-- [ ] 2.3 將 register 表單內容移進 login.tsx 的 RegisterTab 子元件（表單欄位、Zod schema、RHF 同現有 register.tsx）
-- [ ] 2.4 `src/app/(auth)/register.tsx` 改為 redirect 至 `/(auth)/login`（帶 `?tab=register` query 或直接用 router.replace）
-- [ ] 2.5 更新 `src/lib/i18n/locales/*/auth.json` 三語系：新增 `brandTagline`、對齊 web entry namespace 的 `login` / `register` tab label 等 key
+- [x] 2.1 重寫 `src/app/(auth)/login.tsx`：移除「歡迎回來」大標題，頂部加入 mascot（expo-image GIF 或備援 PNG）+ BrandLabel
+- [x] 2.2 在 login.tsx 實作 animated tab bar（Login / Register 底部滑動線），含 Animated.Value 控制 indicator 位移
+- [x] 2.3 將 register 表單內容移進 login.tsx 的 RegisterTab 子元件（表單欄位、Zod schema、RHF 同現有 register.tsx）
+- [x] 2.4 `src/app/(auth)/register.tsx` 改為 redirect 至 `/(auth)/login`（帶 `?tab=register` query 或直接用 router.replace）
+- [x] 2.5 更新 `src/lib/i18n/locales/*/auth.json` 三語系：對齊 web entry 文案（移除「歡迎回來」標題與頁尾連結，tab label 用 loginButton / registerButton）
 
 ## 3. Calendar 月曆重設計
 
-- [ ] 3.1 修改 `src/app/(tabs)/schedule/index.tsx`：移除 `<SegmentedControl>`，Header 右側改為兩顆 icon button（`CalendarDays` / `List`，來自 lucide-react-native）
-- [ ] 3.2 移除月曆區域的 `<Card>` 包裹，讓 `<CalendarMonth>` 直接在 ScrollView content 中渲染（水平 padding 由 ScreenContainer 提供）
-- [ ] 3.3 修改 `src/features/schedule/components/calendar-month.tsx`：移除頂部 ChevronLeft / ChevronRight icon button
-- [ ] 3.4 在 `calendar-month.tsx` 底部加入月份切換按鈕列（兩顆 Pressable，各 `height: 44`、半寬、含「‹ 上個月」/ 「下個月 ›」文字）
-- [ ] 3.5 更新 `src/lib/i18n/locales/*/schedule.json` 三語系：加入月份切換按鈕的 i18n key
+- [x] 3.1 修改 `src/app/(tabs)/schedule/index.tsx`：移除 `<SegmentedControl>`，Header 右側改為兩顆 icon button（`CalendarDays` / `List`，來自 lucide-react-native）
+- [x] 3.2 移除月曆區域的 `<Card>` 包裹，讓 `<CalendarMonth>` 直接在 ScrollView content 中渲染（水平 padding 由 ScreenContainer 提供）
+- [x] 3.3 修改 `src/features/schedule/components/calendar-month.tsx`：移除頂部 ChevronLeft / ChevronRight icon button
+- [x] 3.4 在 `calendar-month.tsx` 底部加入月份切換按鈕列（兩顆 Pressable，各 `height: 44`、半寬、含「‹ 上個月」/ 「下個月 ›」文字）
+- [x] 3.5 更新 `src/lib/i18n/locales/*/schedule.json` 三語系：加入月份切換按鈕的 i18n key
 
 ## 4. Exercises 肌群選取器重寫
 

@@ -11,8 +11,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { Card } from '@/components/ui/card';
-import { Fonts, Spacing } from '@/constants/theme';
+import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { DaySummary } from '@/features/schedule/api/schemas';
 import { DayCell } from '@/features/schedule/components/day-cell';
 import { buildMonthGrid } from '@/lib/date';
@@ -59,16 +58,8 @@ export const CalendarMonth = ({
   }, [month, opacity]);
 
   return (
-    <Card>
-      <View style={styles.header}>
-        <Pressable onPress={onPrev} hitSlop={8}>
-          <ChevronLeft color={theme.text} size={22} />
-        </Pressable>
-        <Text style={[styles.monthLabel, { color: theme.text }]}>{format(month, 'yyyy / MM')}</Text>
-        <Pressable onPress={onNext} hitSlop={8}>
-          <ChevronRight color={theme.text} size={22} />
-        </Pressable>
-      </View>
+    <View style={styles.container}>
+      <Text style={[styles.monthLabel, { color: theme.text }]}>{format(month, 'yyyy / MM')}</Text>
 
       <View style={styles.weekRow}>
         {WEEKDAY_INDEXES.map((index) => (
@@ -92,21 +83,49 @@ export const CalendarMonth = ({
           </View>
         </Animated.View>
       </GestureDetector>
-    </Card>
+
+      <View style={styles.navRow}>
+        <Pressable
+          onPress={onPrev}
+          accessibilityRole="button"
+          accessibilityLabel={t('prev_month')}
+          style={({ pressed }) => [
+            styles.navButton,
+            { backgroundColor: theme.backgroundElement },
+            pressed && { backgroundColor: theme.backgroundSelected },
+          ]}
+        >
+          <ChevronLeft color={theme.text} size={20} />
+          <Text style={[styles.navLabel, { color: theme.text }]}>{t('prev_month')}</Text>
+        </Pressable>
+        <Pressable
+          onPress={onNext}
+          accessibilityRole="button"
+          accessibilityLabel={t('next_month')}
+          style={({ pressed }) => [
+            styles.navButton,
+            { backgroundColor: theme.backgroundElement },
+            pressed && { backgroundColor: theme.backgroundSelected },
+          ]}
+        >
+          <Text style={[styles.navLabel, { color: theme.text }]}>{t('next_month')}</Text>
+          <ChevronRight color={theme.text} size={20} />
+        </Pressable>
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: Spacing.three,
+  container: {
+    width: '100%',
   },
   monthLabel: {
     fontFamily: Fonts.sans,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: Spacing.three,
   },
   weekRow: {
     flexDirection: 'row',
@@ -122,5 +141,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginTop: Spacing.two,
+  },
+  navRow: {
+    flexDirection: 'row',
+    gap: Spacing.three,
+    marginTop: Spacing.four,
+  },
+  navButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.one,
+    height: 48,
+    borderRadius: Radius.lg,
+  },
+  navLabel: {
+    fontFamily: Fonts.sans,
+    fontSize: 15,
+    fontWeight: '600',
   },
 });

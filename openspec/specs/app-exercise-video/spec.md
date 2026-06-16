@@ -1,4 +1,10 @@
-## ADDED Requirements
+# app-exercise-video Specification
+
+## Purpose
+
+動作影片頁的瀏覽、播放與 AI 分析結果展示規範（純前端 mock，串接點標 `// TODO: apiFetch`）。
+
+## Requirements
 
 ### Requirement: 影片清單與篩選
 

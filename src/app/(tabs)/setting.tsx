@@ -9,13 +9,11 @@ import { Card } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
 import { Loading } from '@/components/ui/loading';
 import { PageHeader } from '@/components/ui/page-header';
-import { Switch } from '@/components/ui/switch';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useLogout } from '@/features/auth/api/hooks';
 import { NotificationBell } from '@/features/notifications/components/notification-bell';
-import { useSetHiddenMetrics, useUpdateLanguage, useProfile } from '@/features/profile/api/hooks';
+import { useUpdateLanguage, useProfile } from '@/features/profile/api/hooks';
 import { APP_LOCALES, AppLocale } from '@/features/profile/api/schemas';
-import { BODY_METRIC_GROUPS } from '@/features/schedule/api/schemas';
 import { PasswordChangeSheet } from '@/features/setting/components/password-change-sheet';
 import { ProfileEditSheet } from '@/features/setting/components/profile-edit-sheet';
 import { useTheme } from '@/hooks/use-theme';
@@ -23,12 +21,11 @@ import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
 
 const SettingScreen = () => {
-  const { t, i18n } = useTranslation(['setting', 'nav', 'notify', 'schedule']);
+  const { t, i18n } = useTranslation(['setting', 'nav', 'notify']);
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const { data: profile } = useProfile();
   const updateLanguage = useUpdateLanguage();
-  const setHiddenMetrics = useSetHiddenMetrics();
   const logout = useLogout();
 
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
@@ -37,14 +34,6 @@ const SettingScreen = () => {
   const handleLanguage = (locale: AppLocale) => {
     void i18n.changeLanguage(locale);
     updateLanguage.mutate(locale);
-  };
-
-  const handleToggleMetric = (field: string, show: boolean) => {
-    if (!profile) return;
-    const next = show
-      ? profile.hiddenMetrics.filter((item) => item !== field)
-      : [...profile.hiddenMetrics, field];
-    setHiddenMetrics.mutate(next);
   };
 
   const handleLogout = async () => {
@@ -87,31 +76,6 @@ const SettingScreen = () => {
               />
             ))}
           </View>
-        </Card>
-
-        <Text style={[styles.section, { color: theme.text }]}>{t('metric_preferences')}</Text>
-        <Card>
-          <Text style={[styles.hint, { color: theme.textSecondary }]}>
-            {t('metric_preferences_desc')}
-          </Text>
-          {BODY_METRIC_GROUPS.map((group) => (
-            <View key={group.key} style={styles.metricGroup}>
-              <Text style={[styles.metricGroupTitle, { color: theme.textSecondary }]}>
-                {t(`schedule:metric_group_${group.key}`)}
-              </Text>
-              {group.fields.map((field) => (
-                <View key={field} style={[styles.metricRow, { borderTopColor: theme.border }]}>
-                  <Text style={[styles.metricLabel, { color: theme.text }]}>
-                    {t(`schedule:metric_${field}`)}
-                  </Text>
-                  <Switch
-                    value={!profile.hiddenMetrics.includes(field)}
-                    onValueChange={(show) => handleToggleMetric(field, show)}
-                  />
-                </View>
-              ))}
-            </View>
-          ))}
         </Card>
 
         <Text style={[styles.section, { color: theme.text }]}>{t('account_security')}</Text>
@@ -172,35 +136,9 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginTop: Spacing.one,
   },
-  hint: {
-    fontFamily: Fonts.sans,
-    fontSize: 13,
-    marginBottom: Spacing.two,
-  },
   chips: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.two,
-  },
-  metricGroup: {
-    marginTop: Spacing.two,
-  },
-  metricGroupTitle: {
-    fontFamily: Fonts.sans,
-    fontSize: 13,
-    fontWeight: '600',
-    marginTop: Spacing.three,
-  },
-  metricRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: Spacing.three,
-    marginTop: Spacing.three,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-  metricLabel: {
-    fontFamily: Fonts.sans,
-    fontSize: 15,
   },
 });

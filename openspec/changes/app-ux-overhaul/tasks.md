@@ -30,18 +30,18 @@
 
 ## 5. Statistics 統計頁重設計
 
-- [ ] 5.1 修改 `src/app/(tabs)/statistics.tsx`：移除「自訂」Chip，加入 calendar icon button（`CalendarRange` icon）作為自訂日期入口
-- [ ] 5.2 在 statistics.tsx 加入 `sliders-horizontal` icon button 於 Header 右側，點擊開啟 MetricPreferencesSheet
-- [ ] 5.3 新增 `src/features/statistics/components/metric-preferences-sheet.tsx`：Bottom Sheet，內含 BODY_METRIC_GROUPS 的 Switch 列表（邏輯移植自 `setting.tsx`，呼叫 `useSetHiddenMetrics`）
-- [ ] 5.4 升級 `src/features/statistics/components/bar-chart-view.tsx`：加入 `showYAxisIndices`、`yAxisLabelWidth`、`rulesType`、`barBorderRadius`、`showDataPointOnFocus`（tooltip）props 配置
-- [ ] 5.5 新增 `src/features/statistics/components/chart-card.tsx`：統一 chart title / subtitle / legend 排版的 wrapper Card 元件
-- [ ] 5.6 重整 statistics.tsx 的 section 排版：section header 字型層級統一（`fontSize: 17, fontWeight: '700'`），移除雜亂的 inline style
-- [ ] 5.7 更新 `src/lib/i18n/locales/*/statistics.json` 三語系：加入 metric preferences sheet 標題等新 key
+- [x] 5.1 修改 `src/app/(tabs)/statistics.tsx`：移除「自訂」Chip，加入 calendar icon button（`CalendarRange` icon）作為自訂日期入口
+- [x] 5.2 在 statistics.tsx 加入 `sliders-horizontal` icon button 於 Header 右側，點擊開啟 MetricPreferencesSheet
+- [x] 5.3 新增 `src/features/statistics/components/metric-preferences-sheet.tsx`：Bottom Sheet，內含 BODY_METRIC_GROUPS 的 Switch 列表（邏輯移植自 `setting.tsx`，呼叫 `useSetHiddenMetrics`）
+- [x] 5.4 升級 `src/features/statistics/components/bar-chart-view.tsx`：加入 Y 軸標籤、`rulesType` 網格線、`barBorderTopRadius` 圓角、`focusBarOnPress` + `renderTooltip` 按壓提示
+- [x] 5.5 新增 `src/features/statistics/components/chart-card.tsx`：統一 chart title / subtitle 排版的 wrapper Card 元件（MetricTrendCard 一併改用）
+- [x] 5.6 重整 statistics.tsx 的 section 排版：section header 字型層級統一（`fontSize: 17, fontWeight: '700'`），移除雜亂的 inline style
+- [x] 5.7 更新 `src/lib/i18n/locales/*/statistics.json` 三語系：加入 metric preferences sheet 標題、圖表副標題等新 key
 
 ## 6. Setting 清理
 
-- [ ] 6.1 修改 `src/app/(tabs)/setting.tsx`：移除 `metric_preferences` section（section header、hint、BODY_METRIC_GROUPS 迭代、所有 Switch 元件）
-- [ ] 6.2 移除 setting.tsx 中 `useSetHiddenMetrics` 的 import（已移至 MetricPreferencesSheet）
+- [x] 6.1 修改 `src/app/(tabs)/setting.tsx`：移除 `metric_preferences` section（section header、hint、BODY_METRIC_GROUPS 迭代、所有 Switch 元件）
+- [x] 6.2 移除 setting.tsx 中 `useSetHiddenMetrics`、`Switch`、`BODY_METRIC_GROUPS` import 與孤立 styles
 
 ## 7. 收尾與驗收
 

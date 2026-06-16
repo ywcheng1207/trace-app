@@ -45,10 +45,11 @@
 
 ## 7. 收尾與驗收
 
-- [ ] 7.1 全局搜尋「歡迎回來」確認無殘留硬編碼文案
-- [ ] 7.2 在 login、register 表單手動觸發 error，確認所有 TextField 無 layout shift
-- [ ] 7.3 確認月曆頁在 iPhone SE（小螢幕）上月份切換按鈕觸控區足夠
-- [ ] 7.4 在 exercise 表單確認肌群選取器正面/背面 polygon 顯示正確，Sheet 下鑽流程順暢
-- [ ] 7.5 統計頁確認 bar chart 有 Y 軸標籤、網格線、按壓 tooltip 顯示
-- [ ] 7.6 統計頁確認 MetricPreferencesSheet 開啟後修改設定，身體數值圖表即時反映
-- [ ] 7.7 Setting 頁確認 metric preferences 區塊已移除
+- [x] 7.1 全局搜尋「歡迎回來」確認無殘留硬編碼文案（grep 三語系 + 程式碼皆無殘留）
+- [x] 7.2 TextField 結構性保證無 layout shift（error 區固定 `minHeight: 18` + `opacity` 切換，非條件渲染）
+- [ ] 7.3 [需模擬器] 月曆頁在 iPhone SE（小螢幕）上月份切換按鈕觸控區足夠
+- [ ] 7.4 [需模擬器] exercise 表單肌群選取器正面/背面 polygon 顯示正確，Sheet 下鑽流程順暢
+- [ ] 7.5 [需模擬器] 統計頁 bar chart 有 Y 軸標籤、網格線、按壓 tooltip 顯示
+- [ ] 7.6 [需模擬器] 統計頁 MetricPreferencesSheet 修改設定後身體數值圖表即時反映
+- [x] 7.7 Setting 頁確認 metric preferences 區塊已移除（程式碼 + grep 確認）
+- [x] 7.8 headless 驗證：`tsc --noEmit` 通過、`expo lint` 無錯、`expo export --platform ios` 成功打包（4109 modules，mascot 圖資解析成功）

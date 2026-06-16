@@ -114,7 +114,7 @@ const RegisterScreen = () => {
       <View style={styles.footer}>
         <Text style={[styles.footerText, { color: theme.textSecondary }]}>{t('haveAccount')}</Text>
         <Link href="/login">
-          <Text style={[styles.linkText, { color: theme.primary }]}>{t('loginButton')}</Text>
+          <Text style={[styles.linkText, { color: theme.accent }]}>{t('loginButton')}</Text>
         </Link>
       </View>
     </ScreenContainer>

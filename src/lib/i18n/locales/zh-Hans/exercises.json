@@ -58,5 +58,18 @@
   "kinetic_chain_okc": "开放式动力链",
   "kinetic_chain_ckc": "闭锁式动力链",
   "mechanic_compound": "多关节",
-  "mechanic_isolation": "单关节"
+  "mechanic_isolation": "单关节",
+  "archive_confirm_used": "此动作目前被 {{count}} 个训练计划引用，封存后仍会以名称保留于计划中。确定封存？",
+  "demo_video": "示范视频",
+  "video_ready": "已设定示范视频",
+  "no_video": "尚未设定示范视频",
+  "change_video": "更换视频",
+  "add_video": "新增示范视频",
+  "video_updated": "示范视频已更新",
+  "edit_note": "编辑",
+  "edit_note_title": "编辑动作笔记",
+  "note_placeholder": "记录技术重点、感受或调整...",
+  "save_note": "保存笔记",
+  "quick_start": "快速建立入门动作",
+  "quick_start_done": "已建立一组常见入门动作"
 }

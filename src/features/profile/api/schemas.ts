@@ -15,6 +15,8 @@ export const profileSchema = z.object({
   avatar: z.string().nullable(),
   gender: genderSchema.nullable(),
   heightCm: z.number().nullable(),
+  birthDate: z.string().nullable(),
+  timezone: z.string().nullable(),
   language: localeSchema,
   hiddenMetrics: z.array(z.string()),
 });
@@ -22,7 +24,10 @@ export type Profile = z.infer<typeof profileSchema>;
 
 export const profileEditSchema = z.object({
   displayName: z.string().min(1).max(50),
+  avatar: z.string().nullable(),
   gender: genderSchema.nullable(),
   heightCm: z.number().nullable(),
+  birthDate: z.string().nullable(),
+  timezone: z.string().nullable(),
 });
 export type ProfileEditValues = z.infer<typeof profileEditSchema>;

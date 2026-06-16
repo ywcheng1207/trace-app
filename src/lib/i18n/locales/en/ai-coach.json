@@ -1,0 +1,20 @@
+{
+  "ai_coach": "AI Coach",
+  "daily_quota": "Daily quota left {{remaining}} / {{limit}}",
+  "advice_title": "AI Exercise Advice",
+  "get_advice": "Get AI advice",
+  "analysis_title": "Training Video Analysis",
+  "analysis_hint": "Pick a clip under {{max}}s and AI will give a movement breakdown with suggestions.",
+  "analyze_video": "Analyze video",
+  "video_too_long": "Video is too long — pick a clip under {{max}}s.",
+  "analysis_in_progress": "Analysis for this exercise is already in progress, please wait.",
+  "quota_reached": "Daily AI quota reached — try again tomorrow.",
+  "status_pending": "Submitted, waiting to process...",
+  "status_processing": "AI analyzing...",
+  "status_done": "Analysis complete",
+  "status_failed": "Analysis failed, please try again later",
+  "result_breakdown": "Movement Breakdown",
+  "result_suggestions": "Suggestions",
+  "analysis_done_title": "AI movement analysis complete",
+  "analysis_done_message": "Your video analysis is ready — tap to see the suggestions."
+}

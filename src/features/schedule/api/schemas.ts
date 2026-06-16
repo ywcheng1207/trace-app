@@ -27,6 +27,8 @@ export const trainingPlanSchema = z.object({
 });
 export type TrainingPlan = z.infer<typeof trainingPlanSchema>;
 
+export const MAX_PLAN_EXERCISES = 12;
+
 export const BODY_METRIC_FIELDS = [
   'weight',
   'bodyFat',
@@ -34,8 +36,35 @@ export const BODY_METRIC_FIELDS = [
   'chest',
   'waist',
   'hips',
+  'leftThigh',
+  'rightThigh',
+  'leftCalf',
+  'rightCalf',
+  'leftUpperArm',
+  'rightUpperArm',
+  'leftForearm',
+  'rightForearm',
 ] as const;
 export type BodyMetricField = (typeof BODY_METRIC_FIELDS)[number];
+
+export type BodyMetricGroupKey = 'basic' | 'circumference';
+
+export const BODY_METRIC_GROUPS: { key: BodyMetricGroupKey; fields: readonly BodyMetricField[] }[] = [
+  { key: 'basic', fields: ['weight', 'bodyFat', 'muscleMass', 'chest', 'waist', 'hips'] },
+  {
+    key: 'circumference',
+    fields: [
+      'leftThigh',
+      'rightThigh',
+      'leftCalf',
+      'rightCalf',
+      'leftUpperArm',
+      'rightUpperArm',
+      'leftForearm',
+      'rightForearm',
+    ],
+  },
+];
 
 export const bodyMetricSchema = z.object({
   date: z.string(),
@@ -45,6 +74,14 @@ export const bodyMetricSchema = z.object({
   chest: z.number().nullable(),
   waist: z.number().nullable(),
   hips: z.number().nullable(),
+  leftThigh: z.number().nullable(),
+  rightThigh: z.number().nullable(),
+  leftCalf: z.number().nullable(),
+  rightCalf: z.number().nullable(),
+  leftUpperArm: z.number().nullable(),
+  rightUpperArm: z.number().nullable(),
+  leftForearm: z.number().nullable(),
+  rightForearm: z.number().nullable(),
 });
 export type BodyMetric = z.infer<typeof bodyMetricSchema>;
 

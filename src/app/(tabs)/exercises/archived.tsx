@@ -1,9 +1,11 @@
 import { useRouter } from 'expo-router';
 import { ChevronLeft } from 'lucide-react-native';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Loading } from '@/components/ui/loading';
 import { PageHeader } from '@/components/ui/page-header';
@@ -28,6 +30,8 @@ const ArchivedExercisesScreen = () => {
   const restoreExercise = useRestoreExercise();
   const purgeExercise = usePurgeExercise();
 
+  const [purgingExercise, setPurgingExercise] = useState<Exercise | null>(null);
+
   const handleRestore = (exercise: Exercise) => {
     restoreExercise.mutate(exercise.id, {
       onSuccess: () =>
@@ -35,26 +39,20 @@ const ArchivedExercisesScreen = () => {
     });
   };
 
-  const handlePurge = (exercise: Exercise) => {
-    Alert.alert(t('purge_confirm_title'), t('purge_confirm_desc', { name: exercise.name }), [
-      { text: t('common:cancel'), style: 'cancel' },
-      {
-        text: t('purge'),
-        style: 'destructive',
-        onPress: () =>
-          purgeExercise.mutate(exercise.id, {
-            onSuccess: () =>
-              dispatch(showNotification({ type: 'success', message: t('notify:delete_success') })),
-          }),
-      },
-    ]);
+  const handleConfirmPurge = () => {
+    if (!purgingExercise) return;
+    purgeExercise.mutate(purgingExercise.id, {
+      onSuccess: () =>
+        dispatch(showNotification({ type: 'success', message: t('notify:delete_success') })),
+    });
+    setPurgingExercise(null);
   };
 
   const renderItem = ({ item }: { item: Exercise }) => (
     <ArchivedExerciseItem
       exercise={item}
       onRestore={() => handleRestore(item)}
-      onPurge={() => handlePurge(item)}
+      onPurge={() => setPurgingExercise(item)}
     />
   );
 
@@ -62,8 +60,8 @@ const ArchivedExercisesScreen = () => {
     <SafeAreaView style={[styles.safe, { backgroundColor: theme.background }]} edges={['top']}>
       <View style={styles.header}>
         <Pressable onPress={() => router.back()} style={styles.backRow} hitSlop={8}>
-          <ChevronLeft color={theme.primary} size={20} />
-          <Text style={[styles.backText, { color: theme.primary }]}>{t('back')}</Text>
+          <ChevronLeft color={theme.accent} size={20} />
+          <Text style={[styles.backText, { color: theme.accent }]}>{t('back')}</Text>
         </Pressable>
         <PageHeader title={t('archived_exercises')} subtitle={t('archived_subtitle')} />
       </View>
@@ -80,6 +78,17 @@ const ArchivedExercisesScreen = () => {
           showsVerticalScrollIndicator={false}
         />
       )}
+
+      <ConfirmDialog
+        visible={purgingExercise !== null}
+        title={t('purge_confirm_title')}
+        message={t('purge_confirm_desc', { name: purgingExercise?.name ?? '' })}
+        confirmLabel={t('purge')}
+        cancelLabel={t('common:cancel')}
+        destructive
+        onConfirm={handleConfirmPurge}
+        onClose={() => setPurgingExercise(null)}
+      />
     </SafeAreaView>
   );
 };

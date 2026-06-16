@@ -53,8 +53,8 @@ const styles = StyleSheet.create({
   },
   sheet: {
     maxHeight: '88%',
-    borderTopLeftRadius: Radius.xl,
-    borderTopRightRadius: Radius.xl,
+    borderTopLeftRadius: Radius.sheet,
+    borderTopRightRadius: Radius.sheet,
     paddingHorizontal: Spacing.three,
   },
   header: {

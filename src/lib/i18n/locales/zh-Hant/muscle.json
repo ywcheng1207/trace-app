@@ -24,5 +24,8 @@
   "calves": "小腿",
   "adductors": "內收肌",
   "abs": "腹肌",
-  "obliques": "腹斜肌"
+  "obliques": "腹斜肌",
+  "view_front": "正面",
+  "view_back": "背面",
+  "fine_select": "細項選擇"
 }

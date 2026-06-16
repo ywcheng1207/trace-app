@@ -24,5 +24,8 @@
   "calves": "Calves",
   "adductors": "Adductors",
   "abs": "Abs",
-  "obliques": "Obliques"
+  "obliques": "Obliques",
+  "view_front": "Front",
+  "view_back": "Back",
+  "fine_select": "Fine selection"
 }

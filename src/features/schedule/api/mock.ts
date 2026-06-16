@@ -38,6 +38,14 @@ metrics.set(TODAY, {
   chest: null,
   waist: 80,
   hips: null,
+  leftThigh: 56,
+  rightThigh: 56.5,
+  leftCalf: null,
+  rightCalf: null,
+  leftUpperArm: 38,
+  rightUpperArm: 38.5,
+  leftForearm: null,
+  rightForearm: null,
 });
 notes.set(TODAY, 'Felt strong on bench today.');
 

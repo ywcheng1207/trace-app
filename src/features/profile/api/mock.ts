@@ -9,8 +9,20 @@ let current: Profile = {
   avatar: null,
   gender: 'OTHER',
   heightCm: 175,
+  birthDate: null,
+  timezone: 'Asia/Taipei',
   language: 'zh-Hant',
-  hiddenMetrics: [],
+  // 四肢圍度欄位預設隱藏，使用者可於設定開啟
+  hiddenMetrics: [
+    'leftThigh',
+    'rightThigh',
+    'leftCalf',
+    'rightCalf',
+    'leftUpperArm',
+    'rightUpperArm',
+    'leftForearm',
+    'rightForearm',
+  ],
 };
 
 const clone = (profile: Profile): Profile => ({

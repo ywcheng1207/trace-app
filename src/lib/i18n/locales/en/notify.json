@@ -11,5 +11,11 @@
   "delete_fail": "Delete failed",
   "save_success": "Saved",
   "save_fail": "Save failed",
-  "error_occurred": "Something went wrong, please try again later"
+  "error_occurred": "Something went wrong, please try again later",
+  "ok": "OK",
+  "view_page": "View",
+  "center_title": "Notifications",
+  "center_empty_title": "No notifications yet",
+  "center_empty_desc": "System notifications will appear here",
+  "mark_all_read": "Mark all as read"
 }

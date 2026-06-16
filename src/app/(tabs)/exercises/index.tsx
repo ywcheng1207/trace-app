@@ -5,13 +5,14 @@ import { useTranslation } from 'react-i18next';
 import { FlatList, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { Button } from '@/components/ui/button';
 import { Chip } from '@/components/ui/chip';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Loading } from '@/components/ui/loading';
 import { PageHeader } from '@/components/ui/page-header';
 import { TextField } from '@/components/ui/text-field';
 import { Spacing } from '@/constants/theme';
-import { useExercises } from '@/features/exercises/api/hooks';
+import { useExercises, useQuickStartExercises } from '@/features/exercises/api/hooks';
 import {
   Exercise,
   MUSCLE_GROUP_VALUES,
@@ -21,12 +22,16 @@ import {
 import { ExerciseCard } from '@/features/exercises/components/exercise-card';
 import { ExerciseFormSheet } from '@/features/exercises/components/exercise-form-sheet';
 import { useTheme } from '@/hooks/use-theme';
+import { useAppDispatch } from '@/store/hooks';
+import { showNotification } from '@/store/slices/ui-slice';
 
 const ExercisesScreen = () => {
-  const { t } = useTranslation(['exercises', 'muscle']);
+  const { t } = useTranslation(['exercises', 'muscle', 'notify']);
   const theme = useTheme();
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const { data, isLoading } = useExercises();
+  const quickStart = useQuickStartExercises();
 
   const [search, setSearch] = useState('');
   const [regionFilter, setRegionFilter] = useState<MuscleRegion | null>(null);
@@ -46,6 +51,16 @@ const ExercisesScreen = () => {
   const isEmpty = exercises.length === 0;
   const emptyTitle = isEmpty ? t('no_exercises_title') : t('no_search_results');
   const emptyDesc = isEmpty ? t('no_exercises_desc') : undefined;
+
+  const handleQuickStart = () => {
+    quickStart.mutate(undefined, {
+      onSuccess: () => dispatch(showNotification({ type: 'success', message: t('quick_start_done') })),
+    });
+  };
+
+  const emptyAction = isEmpty ? (
+    <Button label={t('quick_start')} onPress={handleQuickStart} loading={quickStart.isPending} />
+  ) : undefined;
 
   const renderItem = ({ item }: { item: Exercise }) => (
     <ExerciseCard exercise={item} onPress={() => router.push(`/exercises/${item.id}`)} />
@@ -101,7 +116,9 @@ const ExercisesScreen = () => {
           keyExtractor={(item) => item.id}
           renderItem={renderItem}
           contentContainerStyle={styles.list}
-          ListEmptyComponent={<EmptyState title={emptyTitle} description={emptyDesc} />}
+          ListEmptyComponent={
+            <EmptyState title={emptyTitle} description={emptyDesc} action={emptyAction} />
+          }
           showsVerticalScrollIndicator={false}
         />
       )}

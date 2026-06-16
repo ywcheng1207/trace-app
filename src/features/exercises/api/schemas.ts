@@ -73,6 +73,25 @@ export const exerciseUsageSchema = z.object({
 });
 export type ExerciseUsage = z.infer<typeof exerciseUsageSchema>;
 
+export const exerciseVideoAiResultSchema = z.object({
+  analyzedAt: z.string(),
+  summary: z.string(),
+  metrics: z.array(z.object({ label: z.string(), value: z.string() })),
+});
+export type ExerciseVideoAiResult = z.infer<typeof exerciseVideoAiResultSchema>;
+
+export const exerciseVideoSchema = z.object({
+  id: z.string(),
+  exerciseId: z.string(),
+  url: z.string(),
+  posterUrl: z.string().nullable(),
+  date: z.string(),
+  title: z.string().nullable(),
+  hasAiAnalysis: z.boolean(),
+  aiResult: exerciseVideoAiResultSchema.nullable(),
+});
+export type ExerciseVideo = z.infer<typeof exerciseVideoSchema>;
+
 export const exerciseFormSchema = z.object({
   name: z.string().min(1).max(255),
   note: z.string(),

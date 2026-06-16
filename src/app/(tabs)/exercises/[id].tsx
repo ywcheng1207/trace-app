@@ -128,6 +128,13 @@ const ExerciseDetailScreen = () => {
 
       <ExerciseVideoSection exerciseId={exercise.id} videoUrl={exercise.videoUrl} />
 
+      <Button
+        label={t('view_videos')}
+        variant="secondary"
+        onPress={() => router.push(`/exercises/video/${id}`)}
+        fullWidth
+      />
+
       <Card>
         <View style={styles.noteHeader}>
           <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>

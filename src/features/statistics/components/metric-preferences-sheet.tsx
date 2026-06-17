@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 
+
 import { Sheet } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { Fonts, Spacing } from '@/constants/theme';
@@ -30,7 +31,7 @@ export const MetricPreferencesSheet = ({ visible, onClose }: MetricPreferencesSh
   };
 
   return (
-    <Sheet visible={visible} onClose={onClose} title={t('metric_preferences_title')}>
+    <Sheet visible={visible} onClose={onClose} title={t('metric_preferences_title')} scrollable>
       <View style={styles.body}>
         <Text style={[styles.hint, { color: theme.textSecondary }]}>
           {t('setting:metric_preferences_desc')}

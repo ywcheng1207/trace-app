@@ -14,7 +14,14 @@ export const StatSummaryCard = ({ label, value }: StatSummaryCardProps) => {
 
   return (
     <Card style={styles.card}>
-      <Text style={[styles.value, { color: theme.text }]}>{value}</Text>
+      <Text
+        style={[styles.value, { color: theme.text }]}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        minimumFontScale={0.6}
+      >
+        {value}
+      </Text>
       <Text style={[styles.label, { color: theme.textSecondary }]} numberOfLines={1}>
         {label}
       </Text>

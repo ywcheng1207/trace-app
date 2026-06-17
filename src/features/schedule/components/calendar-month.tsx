@@ -70,7 +70,7 @@ export const CalendarMonth = ({
       </View>
 
       <GestureDetector gesture={swipe}>
-        <Animated.View style={gridStyle}>
+        <Animated.View style={[gridStyle, styles.gridWrapper]}>
           <View style={styles.grid}>
             {days.map((day) => (
               <DayCell
@@ -136,6 +136,10 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sans,
     fontSize: 12,
     fontWeight: '600',
+  },
+  gridWrapper: {
+    // DayCell: inner minHeight 58 + cell padding 2*2 = 62px; 6 rows max = 372
+    minHeight: 372,
   },
   grid: {
     flexDirection: 'row',

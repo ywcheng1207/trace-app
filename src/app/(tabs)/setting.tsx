@@ -17,13 +17,18 @@ import { APP_LOCALES, AppLocale } from '@/features/profile/api/schemas';
 import { PasswordChangeSheet } from '@/features/setting/components/password-change-sheet';
 import { ProfileEditSheet } from '@/features/setting/components/profile-edit-sheet';
 import { useTheme } from '@/hooks/use-theme';
-import { useAppDispatch } from '@/store/hooks';
-import { showNotification } from '@/store/slices/ui-slice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { setThemeMode, showNotification } from '@/store/slices/ui-slice';
+
+type ThemeMode = 'light' | 'dark' | 'system';
+
+const THEME_MODES: ThemeMode[] = ['light', 'dark', 'system'];
 
 const SettingScreen = () => {
   const { t, i18n } = useTranslation(['setting', 'nav', 'notify']);
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const themeMode = useAppSelector((state) => state.ui.themeMode);
   const { data: profile } = useProfile();
   const updateLanguage = useUpdateLanguage();
   const logout = useLogout();
@@ -62,6 +67,20 @@ const SettingScreen = () => {
             size="sm"
             onPress={() => setIsProfileEditOpen(true)}
           />
+        </Card>
+
+        <Text style={[styles.section, { color: theme.text }]}>{t('appearance')}</Text>
+        <Card>
+          <View style={styles.chips}>
+            {THEME_MODES.map((mode) => (
+              <Chip
+                key={mode}
+                label={t(`theme_${mode}`)}
+                selected={themeMode === mode}
+                onPress={() => dispatch(setThemeMode(mode))}
+              />
+            ))}
+          </View>
         </Card>
 
         <Text style={[styles.section, { color: theme.text }]}>{t('language')}</Text>

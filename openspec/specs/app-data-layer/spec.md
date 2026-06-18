@@ -1,8 +1,5 @@
-# app-data-layer Specification
+## MODIFIED Requirements
 
-## Purpose
-TBD - created by archiving change app-frontend-foundation. Update Purpose after archive.
-## Requirements
 ### Requirement: Server State 經 React Query
 App 的伺服器資料 SHALL 一律由 React Query 管理（`useQuery` / `useMutation`），query key 集中於 `QUERY_KEYS`，禁止以 `useState` + `useEffect` 手刻資料請求或存入 Redux。
 
@@ -10,21 +7,46 @@ App 的伺服器資料 SHALL 一律由 React Query 管理（`useQuery` / `useMut
 - **WHEN** 畫面需要伺服器資料
 - **THEN** 透過對應 feature 的 `useXxx` hook（React Query）取得，並處理 loading / empty / error 三態
 
-### Requirement: API-ready Mock 樣板
-每個 feature 的資料存取 SHALL 採統一樣板：`api/schemas.ts`（Zod schema + `z.infer` 型別）、`api/mock.ts`（mock 資料與 fetcher）、`api/hooks.ts`（React Query hook）。hook 的 `queryFn` 本階段呼叫 mock，並 SHALL 在串接點標註 `// TODO: apiFetch('/api/...', { schema })`，使日後切換成真實 `apiFetch` 僅需替換該行。
+### Requirement: apiFetch 加密 API 客戶端
+`apiFetch<T>(path, options?)` SHALL：
+- 自動附帶 Cookie header（`buildCookieHeader()`）
+- GET 請求：不加密 body
+- POST/PUT/DELETE：以 `encryptPayload(body, sharedSecret)` 加密，body = `{ciphertext: "..."}`
+- Response：若含 `ciphertext` key → `decryptPayload` → JSON.parse；否則直接 JSON.parse
+- 解密後 payload `ok === false` SHALL throw `ApiError(code, message)`
+- 401 response SHALL 觸發自動 refresh + 一次重試（詳見 app-session spec）
+- 若提供 `schema`（ZodSchema），SHALL 以 `schema.parse()` 驗證解密後資料，驗證失敗 throw `ZodError`
+- 回傳型別為 `T`（直接回傳資料，不包 `ApiResponse` wrapper），**throw on error**
 
-#### Scenario: 預留串接點
-- **WHEN** 檢視任一 feature 的 `hooks.ts`
-- **THEN** 每個 query/mutation 的串接位置都有明確 `// TODO: apiFetch` 標記與對應 Zod schema
+#### Scenario: 加密 POST 請求
+- **WHEN** 呼叫 apiFetch POST 並帶有 body
+- **THEN** body 以 XChaCha20-Poly1305 加密，帶 Cookie header 送出，response 自動解密
 
-#### Scenario: 型別來自 Zod
-- **WHEN** 定義資料結構型別
-- **THEN** 以 `z.infer` 從 schema 推導，無手寫 interface、無 Prisma
+#### Scenario: GET 不加密
+- **WHEN** 呼叫 apiFetch GET
+- **THEN** 不加密 body，帶 Cookie header 送出，response 自動解密
+
+#### Scenario: API 錯誤
+- **WHEN** 解密後 payload ok === false
+- **THEN** throw ApiError，呼叫端的 React Query onError callback 接收
+
+#### Scenario: Schema 驗證通過
+- **WHEN** 提供 schema 且 response 資料符合 schema
+- **THEN** 回傳通過 parse 的型別安全資料
+
+#### Scenario: Schema 驗證失敗
+- **WHEN** 提供 schema 且 response 資料不符合
+- **THEN** throw ZodError，供 React Query 捕捉
 
 ### Requirement: 回應驗證
-透過 `@/lib/api` 的 `apiFetch` 取得的回應 SHALL 經對應 Zod schema 收窄後才使用；mock fetcher 回傳的資料 SHALL 與該 schema 結構一致，確保切換真實 API 時型別不變。
+透過 `apiFetch` 取得的回應 SHALL 在提供 Zod schema 時以 `schema.parse()` 收窄型別後才使用。feature hooks 的 queryFn SHALL 直接呼叫 `apiFetch`，不再使用 mock fetcher。
 
-#### Scenario: mock 與 schema 一致
-- **WHEN** mock fetcher 產生資料
-- **THEN** 該資料可通過對應 schema 的 `safeParse`
+#### Scenario: 資料型別安全
+- **WHEN** feature hook 呼叫 apiFetch 並提供 schema
+- **THEN** 回傳資料型別由 `z.infer<typeof schema>` 靜態推導，無需手動型別斷言
 
+## REMOVED Requirements
+
+### Requirement: API-ready Mock 樣板
+**Reason**: 本 change 起，真實 apiFetch 取代所有 mock fetcher。`api/mock.ts` 架構與 `// TODO: apiFetch` 標記不再需要。
+**Migration**: 各 feature 的 `api/hooks.ts` 直接呼叫 `apiFetch`，schema 保留於 `api/schemas.ts`（`api/mock.ts` 移除）。

@@ -27,6 +27,7 @@
     "expo-video": "~56.1.4",
     "expo-web-browser": "~56.0.5",
     "i18next": "^26.3.1",
+    "libsodium-wrappers": "^0.7.16",
     "lucide-react-native": "^1.18.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -47,6 +48,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@types/libsodium-wrappers": "^0.7.14",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~56.0.4",

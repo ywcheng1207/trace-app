@@ -1,61 +1,119 @@
-import Constants from 'expo-constants';
 import { z } from 'zod';
 
-import { getAccessToken } from '@/lib/auth/token-storage';
-import { ApiResponse } from '@/types/api';
+import { decryptPayload, encryptPayload } from '@/lib/crypto/encryption';
+import { buildCookieHeader } from '@/lib/auth/session';
+import { getSharedSecret } from '@/lib/auth/token-storage';
+import { isRefreshing, refreshAccessToken, SessionExpiredError } from '@/lib/auth/token-refresh';
+import { getSodium } from '@/lib/crypto/sodium';
 
-const BASE_URL =
-  process.env.EXPO_PUBLIC_API_BASE_URL ??
-  (typeof Constants.expoConfig?.extra?.apiBaseUrl === 'string'
-    ? Constants.expoConfig.extra.apiBaseUrl
-    : '');
+const BASE_URL = process.env.EXPO_PUBLIC_API_BASE_URL ?? '';
 
-type ApiFetchOptions<T> = {
-  schema: z.ZodType<T>;
+export class ApiError extends Error {
+  constructor(
+    public readonly code: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+type ApiFetchOptions<_T = unknown> = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
+  schema?: z.ZodTypeAny;
   signal?: AbortSignal;
 };
 
-/**
- * 統一的前台 API client。所有畫面資料請求都走這裡（搭配 React Query），禁止在元件層直接 fetch。
- *
- * 回應一律經 Zod 收窄：呼叫端必須提供該端點 `data` 的 schema，
- * 函式回傳強型別的 ApiResponse<T>，全程不使用 any / as。
- *
- * TODO: 對齊 trace 後端的 wire format——
- *   - 加密 payload（POST/PUT/DELETE）與回應解密
- *   - Ed25519 簽章（須對齊 trace 的 lib/crypto）
- *   - shared secret 協商
- * 目前僅實作 baseURL + token 附帶 + JSON + envelope 驗證的最小骨架，
- * 在確認後端格式前不臆測加密細節。
- */
-export const apiFetch = async <T>(
+const buildEncryptedBody = async (body: unknown): Promise<string> => {
+  const sharedSecret = await getSharedSecret();
+  if (!sharedSecret) throw new ApiError(401, 'No shared secret');
+
+  const sodium = getSodium();
+  const nonce = sodium.to_hex(sodium.randombytes_buf(16));
+  const bodyObj = (typeof body === 'object' && body !== null) ? body as Record<string, unknown> : {};
+  const payload = { nonce, timestamp: Date.now(), ip: '0.0.0.0', ...bodyObj };
+  const ciphertext = await encryptPayload(JSON.stringify(payload), sharedSecret);
+  return JSON.stringify({ ciphertext });
+};
+
+const handleResponse = async <T>(
+  res: Response,
+  schema?: z.ZodTypeAny,
+): Promise<T> => {
+  // Auth errors come back as non-200 with plain JSON {ok, code, message}
+  if (!res.ok) {
+    const json = await res.json().catch(() => ({})) as Record<string, unknown>;
+    const code = typeof json['code'] === 'number' ? json['code'] : res.status;
+    const message = typeof json['message'] === 'string' ? json['message'] : `HTTP ${res.status}`;
+    throw new ApiError(code, message);
+  }
+
+  const json = await res.json() as Record<string, unknown>;
+
+  let data: unknown;
+
+  if ('ciphertext' in json && typeof json['ciphertext'] === 'string') {
+    const sharedSecret = await getSharedSecret();
+    if (!sharedSecret) throw new ApiError(401, 'No shared secret');
+    const decrypted = await decryptPayload(json['ciphertext'], sharedSecret);
+    const parsed = JSON.parse(decrypted) as Record<string, unknown>;
+
+    if (parsed['ok'] === false) {
+      const code = typeof parsed['code'] === 'number' ? parsed['code'] : 500;
+      const message = typeof parsed['message'] === 'string' ? parsed['message'] : 'Unknown error';
+      throw new ApiError(code, message);
+    }
+
+    data = parsed;
+  } else {
+    data = json;
+  }
+
+  if (schema) {
+    return schema.parse(data) as T;
+  }
+  return data as T;
+};
+
+export const apiFetch = async <T = unknown>(
   path: string,
-  options: ApiFetchOptions<T>,
-): Promise<ApiResponse<T>> => {
-  const { schema, method = 'GET', body, signal } = options;
-  const token = await getAccessToken();
+  options: ApiFetchOptions<T> = {},
+): Promise<T> => {
+  const { method = 'GET', body, schema, signal } = options;
+  const isWrite = method !== 'GET';
 
-  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-  if (token) headers.Authorization = `Bearer ${token}`;
+  const cookieHeader = await buildCookieHeader();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    Cookie: cookieHeader,
+  };
 
-  const response = await fetch(`${BASE_URL}${path}`, {
+  const requestBody = isWrite && body !== undefined ? await buildEncryptedBody(body) : undefined;
+
+  const res = await fetch(`${BASE_URL}${path}`, {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
+    body: requestBody,
     signal,
   });
 
-  const envelopeSchema = z.object({
-    success: z.boolean(),
-    data: schema.optional(),
-    error: z.string().optional(),
-  });
+  if (res.status === 401) {
+    // Prevent refresh loop: if already refreshing, fail immediately
+    if (isRefreshing()) throw new SessionExpiredError();
 
-  const json: unknown = await response.json().catch(() => null);
-  const parsed = envelopeSchema.safeParse(json);
+    await refreshAccessToken();
 
-  if (!parsed.success) return { success: false, error: 'invalid_response' };
-  return parsed.data;
+    // Retry once with fresh cookie
+    const freshCookie = await buildCookieHeader();
+    const retryRes = await fetch(`${BASE_URL}${path}`, {
+      method,
+      headers: { ...headers, Cookie: freshCookie },
+      body: requestBody,
+      signal,
+    });
+    return handleResponse<T>(retryRes, schema);
+  }
+
+  return handleResponse<T>(res, schema);
 };

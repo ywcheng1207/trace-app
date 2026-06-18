@@ -2,7 +2,6 @@ import { Check, ChevronDown } from 'lucide-react-native';
 import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
-import { Sheet } from '@/components/ui/sheet';
 import { Fonts, Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -39,11 +38,13 @@ export const Select = <T extends string>({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isOpen && styles.elevated]}>
       {label ? <Text style={[styles.label, { color: theme.textSecondary }]}>{label}</Text> : null}
       <Pressable
-        onPress={() => setIsOpen(true)}
+        onPress={() => setIsOpen((prev) => !prev)}
         style={[styles.field, { backgroundColor: theme.backgroundElement, borderColor }]}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: isOpen }}
       >
         <Text
           style={[styles.value, { color: selectedOption ? theme.text : theme.muted }]}
@@ -51,24 +52,39 @@ export const Select = <T extends string>({
         >
           {selectedOption ? selectedOption.label : (placeholder ?? '')}
         </Text>
-        <ChevronDown color={theme.muted} size={18} />
+        <ChevronDown
+          color={theme.muted}
+          size={18}
+          style={isOpen ? styles.chevronOpen : undefined}
+        />
       </Pressable>
-      {error ? <Text style={[styles.error, { color: theme.danger }]}>{error}</Text> : null}
-
-      <Sheet visible={isOpen} onClose={() => setIsOpen(false)} title={label}>
-        <ScrollView style={styles.list}>
+      {isOpen ? (
+        <ScrollView
+          style={[
+            styles.dropdown,
+            { backgroundColor: theme.background, borderColor: theme.border },
+          ]}
+          showsVerticalScrollIndicator={false}
+          nestedScrollEnabled
+          keyboardShouldPersistTaps="handled"
+        >
           {options.map((option) => (
             <Pressable
               key={option.value}
               onPress={() => handleSelect(option.value)}
-              style={[styles.row, { borderBottomColor: theme.border }]}
+              style={({ pressed }) => [
+                styles.row,
+                { borderBottomColor: theme.border },
+                pressed && { backgroundColor: theme.backgroundElement },
+              ]}
             >
               <Text style={[styles.rowLabel, { color: theme.text }]}>{option.label}</Text>
               {option.value === value ? <Check color={theme.primary} size={18} /> : null}
             </Pressable>
           ))}
         </ScrollView>
-      </Sheet>
+      ) : null}
+      {error ? <Text style={[styles.error, { color: theme.danger }]}>{error}</Text> : null}
     </View>
   );
 };
@@ -76,6 +92,10 @@ export const Select = <T extends string>({
 const styles = StyleSheet.create({
   container: {
     gap: Spacing.one,
+    zIndex: 0,
+  },
+  elevated: {
+    zIndex: 100,
   },
   label: {
     fontFamily: Fonts.sans,
@@ -96,22 +116,28 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sans,
     fontSize: 16,
   },
-  error: {
-    fontFamily: Fonts.sans,
-    fontSize: 13,
+  chevronOpen: {
+    transform: [{ rotate: '180deg' }],
   },
-  list: {
-    maxHeight: 360,
+  dropdown: {
+    borderWidth: 1,
+    borderRadius: Radius.md,
+    maxHeight: 216,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingVertical: Spacing.three,
+    paddingHorizontal: Spacing.three,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   rowLabel: {
     fontFamily: Fonts.sans,
     fontSize: 16,
+  },
+  error: {
+    fontFamily: Fonts.sans,
+    fontSize: 13,
   },
 });

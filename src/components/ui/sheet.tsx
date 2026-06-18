@@ -1,6 +1,6 @@
 import { X } from 'lucide-react-native';
 import { type ReactNode } from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Fonts, Radius, Spacing } from '@/constants/theme';
@@ -11,9 +11,10 @@ type SheetProps = {
   onClose: () => void;
   title?: string;
   children: ReactNode;
+  scrollable?: boolean;
 };
 
-export const Sheet = ({ visible, onClose, title, children }: SheetProps) => {
+export const Sheet = ({ visible, onClose, title, children, scrollable }: SheetProps) => {
   const theme = useTheme();
 
   return (
@@ -31,7 +32,16 @@ export const Sheet = ({ visible, onClose, title, children }: SheetProps) => {
                 <X color={theme.textSecondary} size={22} />
               </Pressable>
             </View>
-            {children}
+            {scrollable ? (
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              >
+                {children}
+              </ScrollView>
+            ) : (
+              children
+            )}
           </SafeAreaView>
         </View>
       </View>

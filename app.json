@@ -42,7 +42,8 @@
         {
           "photosPermission": "允許 trace 存取相簿以更換你的個人頭像。"
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true,

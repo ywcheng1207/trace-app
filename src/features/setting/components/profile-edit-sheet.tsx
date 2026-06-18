@@ -92,7 +92,7 @@ export const ProfileEditSheet = ({ visible, onClose, profile }: ProfileEditSheet
   });
 
   return (
-    <Sheet visible={visible} onClose={onClose} title={t('personal_info')}>
+    <Sheet visible={visible} onClose={onClose} title={t('personal_info')} scrollable>
       <View style={styles.form}>
         <Controller
           control={control}

@@ -1,6 +1,7 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider, useRouter, useSegments } from 'expo-router';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+
+import { useColorScheme } from '@/hooks/use-color-scheme';
 
 import { Loading } from '@/components/ui/loading';
 import { useAuthBootstrap } from '@/features/auth/api/hooks';

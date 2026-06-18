@@ -1,4 +1,5 @@
 import { subDays } from 'date-fns';
+import { CalendarRange, SlidersHorizontal } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -8,6 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
 import { DatePicker } from '@/components/ui/date-picker';
 import { EmptyState } from '@/components/ui/empty-state';
+import { IconButton } from '@/components/ui/icon-button';
 import { Loading } from '@/components/ui/loading';
 import { PageHeader } from '@/components/ui/page-header';
 import { Fonts, Spacing } from '@/constants/theme';
@@ -16,7 +18,9 @@ import { BODY_METRIC_FIELDS } from '@/features/schedule/api/schemas';
 import { useStats } from '@/features/statistics/api/hooks';
 import { STATS_RANGES, StatPoint, StatsRange } from '@/features/statistics/api/schemas';
 import { BarChartView } from '@/features/statistics/components/bar-chart-view';
+import { ChartCard } from '@/features/statistics/components/chart-card';
 import { InsightCard } from '@/features/statistics/components/insight-card';
+import { MetricPreferencesSheet } from '@/features/statistics/components/metric-preferences-sheet';
 import { MetricTrendCard } from '@/features/statistics/components/metric-trend-card';
 import { StatSummaryCard } from '@/features/statistics/components/stat-summary-card';
 import { computeInsights } from '@/features/statistics/insights';
@@ -32,6 +36,7 @@ const StatisticsScreen = () => {
   const [presetDays, setPresetDays] = useState<number>(30);
   const [customStart, setCustomStart] = useState<string>(toDateKey(subDays(new Date(), 30)));
   const [customEnd, setCustomEnd] = useState<string>(toDateKey(new Date()));
+  const [isMetricSheetOpen, setIsMetricSheetOpen] = useState(false);
 
   const range: StatsRange =
     rangeKind === 'custom'
@@ -74,10 +79,31 @@ const StatisticsScreen = () => {
     setRangeKind('preset');
   };
 
+  const headerActions = (
+    <View style={styles.headerActions}>
+      <IconButton
+        active={rangeKind === 'custom'}
+        onPress={() => setRangeKind('custom')}
+        accessibilityLabel={t('range_custom')}
+      >
+        <CalendarRange
+          color={rangeKind === 'custom' ? theme.primary : theme.textSecondary}
+          size={20}
+        />
+      </IconButton>
+      <IconButton
+        onPress={() => setIsMetricSheetOpen(true)}
+        accessibilityLabel={t('metric_preferences_title')}
+      >
+        <SlidersHorizontal color={theme.textSecondary} size={20} />
+      </IconButton>
+    </View>
+  );
+
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: theme.background }]} edges={['top']}>
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        <PageHeader title={t('nav:statistics')} subtitle={t('subtitle')} />
+        <PageHeader title={t('nav:statistics')} subtitle={t('subtitle')} right={headerActions} />
 
         <View style={styles.ranges}>
           {STATS_RANGES.map((rangeOption) => (
@@ -88,11 +114,6 @@ const StatisticsScreen = () => {
               onPress={() => handlePreset(rangeOption)}
             />
           ))}
-          <Chip
-            label={t('range_custom')}
-            selected={rangeKind === 'custom'}
-            onPress={() => setRangeKind('custom')}
-          />
         </View>
 
         {rangeKind === 'custom' ? (
@@ -154,18 +175,15 @@ const StatisticsScreen = () => {
                     <StatSummaryCard key={card.key} label={card.label} value={card.value} />
                   ))}
                 </View>
-                <Card>
-                  <Text style={[styles.chartTitle, { color: theme.textSecondary }]}>
-                    {t('volume_trend')}
-                  </Text>
-                  <BarChartView data={data.volumeTrend} />
-                </Card>
-                <Card>
-                  <Text style={[styles.chartTitle, { color: theme.textSecondary }]}>
-                    {t('muscle_distribution')}
-                  </Text>
-                  <BarChartView data={muscleData} color={theme.accent} />
-                </Card>
+                <ChartCard title={t('volume_trend')} subtitle={t('volume_trend_subtitle')}>
+                  <BarChartView data={data.volumeTrend} unit={t('unit_kg')} />
+                </ChartCard>
+                <ChartCard
+                  title={t('muscle_distribution')}
+                  subtitle={t('muscle_distribution_subtitle')}
+                >
+                  <BarChartView data={muscleData} color={theme.accent} unit={t('unit_sets')} />
+                </ChartCard>
               </View>
             ) : (
               <Card>
@@ -190,6 +208,11 @@ const StatisticsScreen = () => {
           </View>
         )}
       </ScrollView>
+
+      <MetricPreferencesSheet
+        visible={isMetricSheetOpen}
+        onClose={() => setIsMetricSheetOpen(false)}
+      />
     </SafeAreaView>
   );
 };
@@ -203,6 +226,10 @@ const styles = StyleSheet.create({
   content: {
     padding: Spacing.three,
     gap: Spacing.three,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: Spacing.one,
   },
   ranges: {
     flexDirection: 'row',
@@ -231,14 +258,8 @@ const styles = StyleSheet.create({
   },
   section: {
     fontFamily: Fonts.sans,
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '700',
     marginTop: Spacing.one,
-  },
-  chartTitle: {
-    fontFamily: Fonts.sans,
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: Spacing.three,
   },
 });

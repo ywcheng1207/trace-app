@@ -20,22 +20,26 @@ TBD - created by archiving change app-exercises. Update Purpose after archive.
 
 ### Requirement: 動作建立與編輯
 
-系統 SHALL 提供建立 / 編輯動作的表單，欄位含名稱（≤255 字）、筆記、目標肌群、`category` / `force` / `kineticChain` / `mechanic`。目標肌群 SHALL 以**解剖圖選取器**（人體前 / 後視圖，點區塊選取並著色）選擇，且與既有肌群資料雙向相容。以 React Hook Form + Zod 驗證，提交後（mock）即時更新列表。
+系統 SHALL 提供建立 / 編輯動作的表單，欄位含名稱（≤255 字）、筆記、目標肌群、`category` / `force` / `kineticChain` / `mechanic`。目標肌群 SHALL 以 **SVG polygon 解剖圖選取器**（與 web 同款精確人體 silhouette，以 `react-native-svg` 渲染前 / 後視圖）選擇：點擊大部位 polygon SHALL 開啟底部 Sheet 顯示該部位的細項肌群 chips 供勾選，SHALL NOT 在圖下方平鋪列出所有細項。polygon 顏色 SHALL 反映選取狀態（未選 muted / 部分 primary 半透明 / 全選 primary），且與既有肌群資料雙向相容。以 React Hook Form + Zod 驗證，提交後（mock）即時更新列表。
 
-#### Scenario: 解剖圖選取肌群
-- **WHEN** 使用者於解剖圖點某區塊
-- **THEN** 該肌群被選取並著色，再點取消選取
+#### Scenario: 點擊解剖圖部位開啟 Sheet
+- **WHEN** 使用者點擊解剖圖上某個大部位（如胸部）
+- **THEN** 底部 Sheet 開啟，顯示該部位的細項肌群 chips
+
+#### Scenario: 在 Sheet 中勾選細項
+- **WHEN** 使用者於 Sheet 中點擊細項 chip
+- **THEN** 該肌群切換選取狀態，解剖圖對應部位顏色依選取比例更新
 
 #### Scenario: 前 / 後視圖切換
 - **WHEN** 使用者切換前 / 後視圖
-- **THEN** 顯示對應面的可選肌群區塊
+- **THEN** 顯示對應面的 polygon，已選部位維持高亮
 
 #### Scenario: 舊資料相容
 - **WHEN** 編輯既有（以 chip 建立）的動作
 - **THEN** 其肌群在解剖圖上正確呈現為已選
 
 ### Requirement: 動作詳情
-`exercises/[id]` SHALL 顯示動作的基本資訊、分類屬性、目標肌群與筆記，並提供編輯入口與 AI 建議入口（placeholder）。
+`exercises/[id]` SHALL 顯示動作的基本資訊、分類屬性、目標肌群與筆記，並提供編輯入口、AI 建議入口與「查看影片」入口（導向 `exercises/video/[id]`）。
 
 #### Scenario: 檢視詳情
 - **WHEN** 使用者點選列表中的動作
@@ -44,6 +48,10 @@ TBD - created by archiving change app-exercises. Update Purpose after archive.
 #### Scenario: 找不到動作
 - **WHEN** 路由 id 對應不到動作
 - **THEN** 顯示「找不到動作」狀態與返回入口
+
+#### Scenario: 點擊查看影片進入影片頁
+- **WHEN** 使用者點擊詳情頁的「查看影片」按鈕
+- **THEN** 導向 `exercises/video/[id]`，顯示該動作的影片清單與播放器
 
 ### Requirement: 軟刪除封存與還原
 

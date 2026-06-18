@@ -2,6 +2,8 @@
   "calendar_title": "Calendar",
   "calendar_subtitle": "Plan your routine, track your progress.",
   "today": "Today",
+  "prev_month": "Previous",
+  "next_month": "Next",
   "weekday0": "Sun",
   "weekday1": "Mon",
   "weekday2": "Tue",

@@ -15,6 +15,7 @@ import {
   mockUpdateExercise,
 } from '@/features/exercises/api/mock';
 import { ExerciseFormValues } from '@/features/exercises/api/schemas';
+import { mockListExerciseVideos } from '@/features/exercises/api/video-mock';
 import { queryClient } from '@/lib/query/query-client';
 import { QUERY_KEYS } from '@/lib/query/query-keys';
 
@@ -102,6 +103,14 @@ export const useSetExerciseVideo = () => {
     mutationFn: (input: { id: string; videoUrl: string }) =>
       mockSetExerciseVideo(input.id, input.videoUrl),
     onSuccess: (_result, input) => invalidateDetail(input.id),
+  });
+};
+
+export const useExerciseVideos = (id: string, range: { start: string; end: string }) => {
+  // TODO: 換成 apiFetch(`/api/exercises/${id}/videos?start=...&end=...`, { schema })
+  return useQuery({
+    queryKey: QUERY_KEYS.exerciseVideos(id, `${range.start}:${range.end}`),
+    queryFn: () => mockListExerciseVideos(id, range.start, range.end),
   });
 };
 

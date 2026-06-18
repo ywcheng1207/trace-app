@@ -33,5 +33,9 @@
   "v_display_name_required": "Please enter a display name",
   "v_old_password_required": "Please enter your old password",
   "v_password_min": "New password must be at least 6 characters",
-  "v_passwords_not_match": "The new passwords do not match"
+  "v_passwords_not_match": "The new passwords do not match",
+  "appearance": "Appearance",
+  "theme_light": "Light",
+  "theme_dark": "Dark",
+  "theme_system": "System"
 }

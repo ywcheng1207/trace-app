@@ -5,7 +5,7 @@ TBD - created by archiving change app-schedule. Update Purpose after archive.
 ## Requirements
 ### Requirement: 月曆總覽
 
-`(tabs)/schedule` SHALL 以**觸控友善**的月曆呈現當月，並對齊 web 視覺：高格子（整格為點擊區）、日期靠上、底部以 chip 呈現當日「計畫 / 數值 / 筆記」狀態，今天以品牌橘外框 + 底色標示、過去日淡化。月份切換 SHALL 同時支援左右箭頭與水平滑動手勢。月曆 SHALL 提供「月曆 ↔ 清單」雙視圖切換。
+`(tabs)/schedule` SHALL 以**觸控友善**的月曆呈現當月，並對齊 web 視覺：高格子（整格為點擊區）、日期靠上、底部以 chip 呈現當日「計畫 / 數值 / 筆記」狀態，今天以品牌橘外框 + 底色標示、過去日淡化。月曆 SHALL **不以 Card 外框包裹**，內容延展至容器水平邊緣。視圖切換 SHALL 以兩顆 icon button（CalendarDays / List）呈現於 Header 右側，SHALL NOT 使用 SegmentedControl。月份切換 SHALL 以**月曆下方的兩顆大型按鈕**（高度 ≥ 44pt、各約半寬）與水平滑動手勢操作；月曆頂部保留月份標題但不含左右切換按鈕。
 
 #### Scenario: 觸控點選日期
 - **WHEN** 使用者點某一天（整格皆可點）
@@ -15,9 +15,21 @@ TBD - created by archiving change app-schedule. Update Purpose after archive.
 - **WHEN** 某天有計畫 / 身體數值 / 筆記
 - **THEN** 該格底部顯示對應 chip（計畫依完成度配色、數值綠、筆記黃）
 
+#### Scenario: 月曆全寬無框
+- **WHEN** 使用者進入月曆頁
+- **THEN** 月曆格子橫向佔滿可用寬度，無外框 Card 包裹
+
+#### Scenario: 下方按鈕換月
+- **WHEN** 使用者點擊月曆下方的「上個月」或「下個月」大按鈕
+- **THEN** 月曆切換至對應月份（過場動畫）
+
 #### Scenario: 滑動換月
 - **WHEN** 使用者於月曆左右滑動
-- **THEN** 切換到上 / 下一個月（過場動畫），箭頭亦可達同效果
+- **THEN** 切換到上 / 下一個月（過場動畫），與下方按鈕同效
+
+#### Scenario: icon button 切換視圖
+- **WHEN** 使用者點擊 Header 的 CalendarDays / List icon button
+- **THEN** 切換月曆 / 清單視圖，被選取的 icon 以品牌色高亮
 
 #### Scenario: 雙視圖切換
 - **WHEN** 使用者切到「清單」視圖

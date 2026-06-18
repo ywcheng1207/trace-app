@@ -41,7 +41,12 @@ export const TextField = ({ label, error, onFocus, onBlur, style, ...rest }: Tex
         }}
         {...rest}
       />
-      {error ? <Text style={[styles.error, { color: theme.danger }]}>{error}</Text> : null}
+      <Text
+        style={[styles.error, { color: theme.danger }, !error && styles.errorHidden]}
+        numberOfLines={1}
+      >
+        {error ?? ''}
+      </Text>
     </View>
   );
 };
@@ -65,6 +70,11 @@ const styles = StyleSheet.create({
   },
   error: {
     fontSize: 13,
+    lineHeight: 18,
+    minHeight: 18,
     fontFamily: Fonts.sans,
+  },
+  errorHidden: {
+    opacity: 0,
   },
 });

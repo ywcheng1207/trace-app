@@ -1,12 +1,7 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import {
-  mockGetProfile,
-  mockSetHiddenMetrics,
-  mockUpdateLanguage,
-  mockUpdateProfile,
-} from '@/features/profile/api/mock';
-import { AppLocale, ProfileEditValues } from '@/features/profile/api/schemas';
+import { AppLocale, ProfileEditValues, profileResponseSchema } from '@/features/profile/api/schemas';
+import { apiFetch } from '@/lib/api/api-fetch';
 import { queryClient } from '@/lib/query/query-client';
 import { QUERY_KEYS } from '@/lib/query/query-keys';
 
@@ -15,31 +10,48 @@ const invalidateProfile = () => {
 };
 
 export const useProfile = () => {
-  // TODO: 換成 apiFetch('/api/users/profile', { schema: profileSchema })
   return useQuery({
     queryKey: QUERY_KEYS.profile(),
-    queryFn: () => mockGetProfile(),
+    queryFn: () => apiFetch('/api/users/profile', { schema: profileResponseSchema }),
     staleTime: 1000 * 60 * 5,
   });
 };
 
 export const useUpdateProfile = () => {
   return useMutation({
-    mutationFn: (values: ProfileEditValues) => mockUpdateProfile(values),
+    mutationFn: async (values: ProfileEditValues) => {
+      await apiFetch('/api/users/profile', {
+        method: 'PATCH',
+        body: {
+          display_name: values.displayName,
+          gender: values.gender,
+          height: values.heightCm,
+          birth_date: values.birthDate,
+          timezone: values.timezone,
+          // avatar excluded — upload flow not yet implemented
+        },
+      });
+    },
     onSuccess: invalidateProfile,
   });
 };
 
 export const useUpdateLanguage = () => {
+  // Language is managed locally via i18n — no backend endpoint available
   return useMutation({
-    mutationFn: (language: AppLocale) => mockUpdateLanguage(language),
-    onSuccess: invalidateProfile,
+    mutationFn: async (_locale: AppLocale) => {
+      return;
+    },
   });
 };
 
 export const useSetHiddenMetrics = () => {
   return useMutation({
-    mutationFn: (hiddenMetrics: string[]) => mockSetHiddenMetrics(hiddenMetrics),
+    mutationFn: (hiddenMetrics: string[]) =>
+      apiFetch('/api/users/profile', {
+        method: 'PATCH',
+        body: { hidden_metrics: hiddenMetrics },
+      }),
     onSuccess: invalidateProfile,
   });
 };

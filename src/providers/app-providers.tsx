@@ -1,5 +1,5 @@
 import { QueryClientProvider } from '@tanstack/react-query';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { I18nextProvider } from 'react-i18next';
@@ -9,11 +9,16 @@ import { PersistGate } from 'redux-persist/integration/react';
 
 import { Loading } from '@/components/ui/loading';
 import { Toast } from '@/components/ui/toast';
+import { cryptoReady } from '@/lib/crypto/sodium';
 import i18n from '@/lib/i18n';
 import { queryClient } from '@/lib/query/query-client';
 import { persistor, store } from '@/store';
 
 export const AppProviders = ({ children }: PropsWithChildren) => {
+  useEffect(() => {
+    void cryptoReady();
+  }, []);
+
   return (
     <GestureHandlerRootView style={styles.root}>
       <SafeAreaProvider>

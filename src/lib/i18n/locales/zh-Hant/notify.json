@@ -1,5 +1,6 @@
 {
   "login_failed": "電子郵件或密碼不正確",
+  "connection_failed": "無法連線到伺服器，請檢查網路後再試",
   "logout_success": "已登出",
   "register_success": "帳號建立成功",
   "reset_email_sent": "若此電子郵件已註冊，您將收到重設密碼的連結",

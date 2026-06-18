@@ -9,6 +9,7 @@ import { TextField } from '@/components/ui/text-field';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useLogin } from '@/features/auth/api/hooks';
 import { LoginRequest, loginSchema } from '@/features/auth/api/schemas';
+import { ApiError } from '@/lib/api/api-fetch';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
@@ -29,7 +30,14 @@ export const LoginForm = () => {
 
   const onSubmit = handleSubmit((values) => {
     login.mutate(values, {
-      onError: () => dispatch(showNotification({ type: 'error', message: t('notify:login_failed') })),
+      onError: (error) => {
+        // Backend returns 400 for bad credentials (user-not-found / wrong password),
+        // 401 reserved for token auth. Anything else is a connection/system failure.
+        const isCredentialError =
+          error instanceof ApiError && (error.code === 400 || error.code === 401);
+        const messageKey = isCredentialError ? 'notify:login_failed' : 'notify:connection_failed';
+        dispatch(showNotification({ type: 'error', message: t(messageKey) }));
+      },
     });
   });
 

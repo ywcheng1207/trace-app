@@ -1,0 +1,30 @@
+{
+  "cli": {
+    "version": ">= 16.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://trace-beta-seven.vercel.app"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://trace-beta-seven.vercel.app",
+        "EXPO_PUBLIC_SIGNING_PUBKEY": "MCowBQYDK2VwAyEAHOO/7vvL/vfJCzZm6xpIvJq1H5y9ksGOdp5WClZmsmw="
+      }
+    },
+    "production": {
+      "env": {
+        "EXPO_PUBLIC_API_BASE_URL": "https://trace-beta-seven.vercel.app",
+        "EXPO_PUBLIC_SIGNING_PUBKEY": "MCowBQYDK2VwAyEAHOO/7vvL/vfJCzZm6xpIvJq1H5y9ksGOdp5WClZmsmw="
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

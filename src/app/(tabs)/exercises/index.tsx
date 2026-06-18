@@ -26,7 +26,7 @@ import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
 
 const ExercisesScreen = () => {
-  const { t } = useTranslation(['exercises', 'muscle', 'notify']);
+  const { t, i18n } = useTranslation(['exercises', 'muscle', 'notify']);
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -53,9 +53,10 @@ const ExercisesScreen = () => {
   const emptyDesc = isEmpty ? t('no_exercises_desc') : undefined;
 
   const handleQuickStart = () => {
-    quickStart.mutate(undefined, {
-      onSuccess: () => dispatch(showNotification({ type: 'success', message: t('quick_start_done') })),
-    });
+    quickStart.mutate(
+      { categoryIds: ['powerlifting', 'bodybuilding', 'functional'], language: i18n.language, confirmed: true },
+      { onSuccess: () => dispatch(showNotification({ type: 'success', message: t('quick_start_done') })) },
+    );
   };
 
   const emptyAction = isEmpty ? (

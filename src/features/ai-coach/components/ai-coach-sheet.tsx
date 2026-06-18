@@ -8,12 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Sheet } from '@/components/ui/sheet';
 import { Fonts, Radius, Spacing } from '@/constants/theme';
 import {
+  AI_QUOTA_EXCEEDED,
+  ANALYSIS_IN_PROGRESS,
   useAiUsage,
   useAnalysisTask,
   useExerciseAdvice,
   useStartAnalysis,
 } from '@/features/ai-coach/api/hooks';
-import { AI_QUOTA_EXCEEDED, ANALYSIS_IN_PROGRESS } from '@/features/ai-coach/api/mock';
 import { AiAdvice, VIDEO_MAX_DURATION_SEC } from '@/features/ai-coach/api/schemas';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch } from '@/store/hooks';

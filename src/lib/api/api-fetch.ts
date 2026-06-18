@@ -18,10 +18,10 @@ export class ApiError extends Error {
   }
 }
 
-type ApiFetchOptions<_T = unknown> = {
+type ApiFetchOptions<T = unknown> = {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   body?: unknown;
-  schema?: z.ZodTypeAny;
+  schema?: z.ZodType<T>;
   signal?: AbortSignal;
 };
 
@@ -39,7 +39,7 @@ const buildEncryptedBody = async (body: unknown): Promise<string> => {
 
 const handleResponse = async <T>(
   res: Response,
-  schema?: z.ZodTypeAny,
+  schema?: z.ZodType<T>,
 ): Promise<T> => {
   // Auth errors come back as non-200 with plain JSON {ok, code, message}
   if (!res.ok) {

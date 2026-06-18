@@ -55,7 +55,7 @@ const SettingScreen = () => {
 
         <Card>
           <View style={styles.profileRow}>
-            <Avatar name={profile.displayName} uri={profile.avatar ?? undefined} size={56} />
+            <Avatar name={profile.displayName} size={56} />
             <View style={styles.profileInfo}>
               <Text style={[styles.name, { color: theme.text }]}>{profile.displayName}</Text>
               <Text style={[styles.email, { color: theme.textSecondary }]}>{profile.email}</Text>
@@ -90,7 +90,7 @@ const SettingScreen = () => {
               <Chip
                 key={locale}
                 label={t(`lang_${locale.toLowerCase().replace('-', '_')}`)}
-                selected={profile.language === locale}
+                selected={i18n.language === locale}
                 onPress={() => handleLanguage(locale)}
               />
             ))}

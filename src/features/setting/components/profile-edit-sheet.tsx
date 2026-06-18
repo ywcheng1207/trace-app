@@ -38,7 +38,7 @@ const parseNumber = (text: string): number | null => {
 
 const buildDefaults = (profile: Profile): ProfileEditValues => ({
   displayName: profile.displayName,
-  avatar: profile.avatar,
+  avatar: null,
   gender: profile.gender,
   heightCm: profile.heightCm,
   birthDate: profile.birthDate,

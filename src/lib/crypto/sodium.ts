@@ -1,3 +1,5 @@
+import './install-crypto-polyfill';
+
 import _sodium from 'libsodium-wrappers';
 
 let _isReady = false;

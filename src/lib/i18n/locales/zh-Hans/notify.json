@@ -1,5 +1,6 @@
 {
   "login_failed": "电子邮件或密码不正确",
+  "connection_failed": "无法连接到服务器，请检查网络后再试",
   "logout_success": "已登出",
   "register_success": "账号创建成功",
   "reset_email_sent": "若此电子邮件已注册，您将收到重置密码的链接",

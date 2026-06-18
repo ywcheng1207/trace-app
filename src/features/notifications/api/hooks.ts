@@ -1,24 +1,73 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+import { z } from 'zod';
 
 import {
-  mockGetNotifications,
-  mockMarkAllNotificationsRead,
-  mockMarkNotificationRead,
-} from '@/features/notifications/api/mock';
+  SystemNotification,
+  notificationKindSchema,
+  notificationActionPathSchema,
+} from '@/features/notifications/api/schemas';
+import { apiFetch } from '@/lib/api/api-fetch';
 import { queryClient } from '@/lib/query/query-client';
 import { QUERY_KEYS } from '@/lib/query/query-keys';
 
 const POLL_INTERVAL_MS = 1000 * 10;
 
-const invalidateNotifications = () => {
-  void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.notifications() });
+//
+// Internal poll response schema
+//
+
+const pollItemSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  exerciseName: z.string().optional(),
+  exerciseId: z.string().optional(),
+  notificationType: z.string().optional(),
+});
+
+const pollResponseSchema = z
+  .object({ ok: z.boolean(), notifications: z.array(pollItemSchema) })
+  .transform((data) =>
+    data.notifications.map((n): SystemNotification => ({
+      id: n.id,
+      kind: notificationKindSchema.catch('info').parse(n.type),
+      title: n.exerciseName ?? 'Notification',
+      body: '',
+      read: false,
+      createdAt: new Date().toISOString(),
+      actionPath: n.exerciseId
+        ? notificationActionPathSchema.catch(undefined as never).parse('/exercises')
+        : undefined,
+    })),
+  );
+
+//
+// Helpers
+//
+
+const mergeNotifications = (
+  incoming: SystemNotification[],
+  existing: SystemNotification[] = [],
+): SystemNotification[] => {
+  const existingIds = new Set(existing.map((n) => n.id));
+  const fresh = incoming.filter((n) => !existingIds.has(n.id));
+  return fresh.length > 0 ? [...fresh, ...existing] : existing;
 };
 
+//
+// Hooks
+//
+
 export const useNotifications = () => {
-  // TODO: 換成 apiFetch('/api/notifications', { schema: z.array(systemNotificationSchema) })
   return useQuery({
     queryKey: QUERY_KEYS.notifications(),
-    queryFn: () => mockGetNotifications(),
+    queryFn: async (): Promise<SystemNotification[]> => {
+      const incoming = await apiFetch('/api/notifications/poll', {
+        schema: pollResponseSchema,
+      });
+      const existing =
+        queryClient.getQueryData<SystemNotification[]>(QUERY_KEYS.notifications()) ?? [];
+      return mergeNotifications(incoming, existing);
+    },
     refetchInterval: POLL_INTERVAL_MS,
     staleTime: 0,
   });
@@ -26,14 +75,20 @@ export const useNotifications = () => {
 
 export const useMarkNotificationRead = () => {
   return useMutation({
-    mutationFn: (id: string) => mockMarkNotificationRead(id),
-    onSuccess: invalidateNotifications,
+    mutationFn: async (id: string) => {
+      queryClient.setQueryData<SystemNotification[]>(QUERY_KEYS.notifications(), (prev) =>
+        (prev ?? []).map((n) => (n.id === id ? { ...n, read: true } : n)),
+      );
+    },
   });
 };
 
 export const useMarkAllNotificationsRead = () => {
   return useMutation({
-    mutationFn: () => mockMarkAllNotificationsRead(),
-    onSuccess: invalidateNotifications,
+    mutationFn: async () => {
+      queryClient.setQueryData<SystemNotification[]>(QUERY_KEYS.notifications(), (prev) =>
+        (prev ?? []).map((n) => ({ ...n, read: true })),
+      );
+    },
   });
 };

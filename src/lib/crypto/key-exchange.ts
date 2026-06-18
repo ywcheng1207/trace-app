@@ -34,6 +34,20 @@ export const generateFingerprint = async (pubKeyB64: string): Promise<string> =>
   return sodium.to_base64(hash);
 };
 
+// The server public key and fingerprint come from libsodium (url-safe base64, no
+// padding), but the Ed25519 signature and SPKI signing key are produced by Node's
+// Buffer / WebCrypto (standard base64, with padding). libsodium's default decoder is
+// url-safe-no-padding and throws on '+', '/' and '='. Normalize so either variant
+// decodes cleanly.
+const fromFlexibleBase64 = (
+  sodium: Awaited<ReturnType<typeof cryptoReady>>,
+  value: string,
+): Uint8Array => {
+  const normalized = value.trim().replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized.padEnd(Math.ceil(normalized.length / 4) * 4, '=');
+  return sodium.from_base64(padded, sodium.base64_variants.ORIGINAL);
+};
+
 export const verifyServerKey = async (
   serverPubKeyB64: string,
   signatureB64: string,
@@ -51,9 +65,9 @@ export const verifyServerKey = async (
 
   // Ed25519 verify: strip 12-byte SPKI header → raw 32-byte key
   // The server signs the base64 string of the public key (UTF-8 encoded)
-  const spkiBytes = sodium.from_base64(signingPubKeySpkiB64);
+  const spkiBytes = fromFlexibleBase64(sodium, signingPubKeySpkiB64);
   const rawSigningKey = spkiBytes.slice(12);
-  const signatureBytes = sodium.from_base64(signatureB64);
+  const signatureBytes = fromFlexibleBase64(sodium, signatureB64);
   // Message is the UTF-8 encoding of the base64 string (matches server signData)
   const messageBytes = sodium.from_string(serverPubKeyB64);
 

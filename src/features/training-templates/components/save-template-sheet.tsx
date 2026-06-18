@@ -9,7 +9,6 @@ import { Spacing } from '@/constants/theme';
 import { PlanExercise } from '@/features/schedule/api/schemas';
 import { toTemplateExercises } from '@/features/schedule/plan-utils';
 import { useCreateTemplate } from '@/features/training-templates/api/hooks';
-import { TEMPLATE_NAME_TAKEN } from '@/features/training-templates/api/mock';
 import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
 
@@ -46,11 +45,7 @@ export const SaveTemplateSheet = ({ visible, onClose, exercises }: SaveTemplateS
           dispatch(showNotification({ type: 'success', message: t('template_saved') }));
           handleClose();
         },
-        onError: (mutationError) => {
-          if (mutationError instanceof Error && mutationError.message === TEMPLATE_NAME_TAKEN) {
-            setError(t('template_name_taken'));
-            return;
-          }
+        onError: () => {
           dispatch(showNotification({ type: 'error', message: t('notify:error_occurred') }));
         },
       },

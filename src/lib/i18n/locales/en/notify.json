@@ -1,5 +1,6 @@
 {
   "login_failed": "Invalid email or password",
+  "connection_failed": "Cannot reach the server. Please check your connection and try again",
   "logout_success": "Logged out",
   "register_success": "Account created",
   "reset_email_sent": "If this email is registered, you will receive a reset link",

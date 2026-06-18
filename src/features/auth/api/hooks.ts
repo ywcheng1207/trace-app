@@ -50,7 +50,7 @@ export const useAuthBootstrap = () => {
       }
 
       try {
-        await apiFetch('/api/user/me', { schema: undefined });
+        await apiFetch('/api/users/profile', { schema: undefined });
         if (active) dispatch(setAuthenticated(null));
       } catch (e) {
         if (!active) return;

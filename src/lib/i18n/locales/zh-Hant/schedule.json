@@ -16,6 +16,7 @@
   "training_plan": "訓練計畫",
   "body_metric": "身體數值",
   "note": "筆記",
+  "edit_note": "編輯",
   "no_exercises_arranged": "尚未安排動作",
   "add_first_exercise_desc": "為這一天加入第一個動作。",
   "add_exercise": "新增動作",

@@ -12,6 +12,7 @@
   "delete_fail": "Delete failed",
   "save_success": "Saved",
   "save_fail": "Save failed",
+  "note_too_long": "Note is too long, please shorten it before saving",
   "error_occurred": "Something went wrong, please try again later",
   "ok": "OK",
   "view_page": "View",

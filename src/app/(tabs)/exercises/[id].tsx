@@ -20,6 +20,7 @@ import { useArchiveExercise, useExercise, useExerciseUsage } from '@/features/ex
 import { AiCoachSheet } from '@/features/ai-coach/components/ai-coach-sheet';
 import { ExerciseFormSheet } from '@/features/exercises/components/exercise-form-sheet';
 import { ExerciseVideoSection } from '@/features/exercises/components/exercise-video-section';
+import { RichTextViewer } from '@/features/notes/components/rich-text-viewer';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
@@ -156,9 +157,7 @@ const ExerciseDetailScreen = () => {
 
       <SectionHeader title={t('exercise_note')} action={noteEditAction} />
       <Card>
-        <Text style={[styles.note, { color: exercise.note ? theme.text : theme.muted }]}>
-          {exercise.note ?? t('no_note')}
-        </Text>
+        <RichTextViewer value={exercise.note} placeholder={t('no_note')} />
       </Card>
 
       <View style={styles.actions}>
@@ -259,11 +258,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.two,
-  },
-  note: {
-    fontFamily: Fonts.sans,
-    fontSize: 15,
-    lineHeight: 22,
   },
   actions: {
     gap: Spacing.two,

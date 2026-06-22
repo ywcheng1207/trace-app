@@ -12,6 +12,7 @@
   "delete_fail": "删除失败",
   "save_success": "保存成功",
   "save_fail": "保存失败",
+  "note_too_long": "笔记内容过长，请删减后再保存",
   "error_occurred": "发生错误，请稍后再试",
   "ok": "好",
   "view_page": "查看",

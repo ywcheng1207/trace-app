@@ -5,43 +5,42 @@ import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
-import { EmptyState } from '@/components/ui/empty-state';
 import { Loading } from '@/components/ui/loading';
 import { ScreenContainer } from '@/components/ui/screen-container';
 import { NoteLimits } from '@/constants/limits';
 import { Fonts, Spacing } from '@/constants/theme';
-import { useExercise, useSetExerciseNote } from '@/features/exercises/api/hooks';
 import { RichTextEditor } from '@/features/notes/components/rich-text-editor';
 import { getNoteLength } from '@/features/notes/lib/tiptap';
+import { useDayNote, useSaveDayNote } from '@/features/schedule/api/hooks';
 import { useTheme } from '@/hooks/use-theme';
 import { useAppDispatch } from '@/store/hooks';
 import { showNotification } from '@/store/slices/ui-slice';
 
-const ExerciseNoteScreen = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const { t } = useTranslation(['exercises', 'notify']);
+const DayNoteScreen = () => {
+  const { day } = useLocalSearchParams<{ day: string }>();
+  const { t } = useTranslation(['schedule', 'notify']);
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
-  const { data: exercise, isLoading } = useExercise(id);
-  const setNote = useSetExerciseNote();
+  const { data: note, isLoading } = useDayNote(day);
+  const saveDayNote = useSaveDayNote();
 
   const [content, setContent] = useState('');
-  const [syncedId, setSyncedId] = useState<string | null>(null);
+  const [syncedDay, setSyncedDay] = useState<string | null>(null);
 
-  if (exercise && exercise.id !== syncedId) {
-    setSyncedId(exercise.id);
-    setContent(exercise.note ?? '');
+  if (!isLoading && day !== syncedDay) {
+    setSyncedDay(day);
+    setContent(note ?? '');
   }
 
   const handleSave = () => {
-    if (getNoteLength(content) > NoteLimits.EXERCISE_NOTE) {
+    if (getNoteLength(content) > NoteLimits.TRAINING_NOTE) {
       dispatch(showNotification({ type: 'error', message: t('notify:note_too_long') }));
       return;
     }
-    setNote.mutate(
-      { id, note: content },
+    saveDayNote.mutate(
+      { date: day, note: content },
       {
         onSuccess: () => {
           dispatch(showNotification({ type: 'success', message: t('notify:save_success') }));
@@ -52,17 +51,6 @@ const ExerciseNoteScreen = () => {
   };
 
   if (isLoading) return <Loading />;
-
-  if (!exercise) {
-    return (
-      <ScreenContainer>
-        <EmptyState
-          title={t('exercise_not_found')}
-          action={<Button label={t('back')} variant="secondary" onPress={() => router.back()} />}
-        />
-      </ScreenContainer>
-    );
-  }
 
   return (
     <ScreenContainer>
@@ -75,18 +63,18 @@ const ExerciseNoteScreen = () => {
           label={t('save_note')}
           size="sm"
           onPress={handleSave}
-          loading={setNote.isPending}
+          loading={saveDayNote.isPending}
         />
       </View>
 
-      <Text style={[styles.title, { color: theme.text }]}>{t('edit_note_title')}</Text>
-      <Text style={[styles.subtitle, { color: theme.textSecondary }]}>{exercise.name}</Text>
+      <Text style={[styles.title, { color: theme.text }]}>{t('note')}</Text>
+      <Text style={[styles.subtitle, { color: theme.textSecondary }]}>{day}</Text>
 
       <View style={styles.editor}>
         <RichTextEditor
           value={content}
           onChange={setContent}
-          maxLength={NoteLimits.EXERCISE_NOTE}
+          maxLength={NoteLimits.TRAINING_NOTE}
           placeholder={t('note_placeholder')}
         />
       </View>
@@ -94,7 +82,7 @@ const ExerciseNoteScreen = () => {
   );
 };
 
-export default ExerciseNoteScreen;
+export default DayNoteScreen;
 
 const styles = StyleSheet.create({
   header: {

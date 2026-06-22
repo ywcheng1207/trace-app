@@ -19,5 +19,12 @@
   "center_title": "通知",
   "center_empty_title": "目前没有通知",
   "center_empty_desc": "系统通知会显示在这里",
-  "mark_all_read": "全部标为已读"
+  "mark_all_read": "全部标为已读",
+  "group_today": "今天",
+  "group_yesterday": "昨天",
+  "group_this_week": "本周",
+  "group_earlier": "更早",
+  "mark_read": "标为已读",
+  "mark_unread": "标为未读",
+  "delete": "删除"
 }

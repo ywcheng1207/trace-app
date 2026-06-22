@@ -1,85 +1,45 @@
-import { format, parseISO } from 'date-fns';
-import { AlertTriangle, Bell, CheckCircle2, Info, XCircle } from 'lucide-react-native';
+import { Bell } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { router } from 'expo-router';
 
 import { EmptyState } from '@/components/ui/empty-state';
 import { Sheet } from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Fonts, Radius, Spacing } from '@/constants/theme';
 import {
+  useDeleteNotification,
   useMarkAllNotificationsRead,
   useMarkNotificationRead,
   useNotifications,
+  useToggleNotificationRead,
 } from '@/features/notifications/api/hooks';
-import { NotificationKind, SystemNotification } from '@/features/notifications/api/schemas';
+import { SystemNotification } from '@/features/notifications/api/schemas';
+import { NotificationRow } from '@/features/notifications/components/notification-row';
+import { NotificationSectionHeader } from '@/features/notifications/components/notification-section';
+import { groupByDate, NotificationSection } from '@/features/notifications/lib/group-notifications';
 import { useTheme } from '@/hooks/use-theme';
 
-const ICON_BY_KIND = {
-  success: CheckCircle2,
-  error: XCircle,
-  warning: AlertTriangle,
-  info: Info,
-} as const;
-
-type NotificationRowProps = {
-  notification: SystemNotification;
-  onPress: () => void;
-};
-
-const NotificationRow = ({ notification, onPress }: NotificationRowProps) => {
-  const theme = useTheme();
-
-  const tintByKind: Record<NotificationKind, string> = {
-    success: theme.success,
-    error: theme.danger,
-    warning: theme.warning,
-    info: theme.info,
-  };
-  const Icon = ICON_BY_KIND[notification.kind];
-  const tint = tintByKind[notification.kind];
-  const timeLabel = format(parseISO(notification.createdAt), 'MM/dd HH:mm');
-
-  return (
-    <Pressable
-      onPress={onPress}
-      style={[
-        styles.row,
-        { borderColor: theme.border },
-        !notification.read && { backgroundColor: theme.backgroundElement },
-      ]}
-    >
-      <Icon color={tint} size={20} />
-      <View style={styles.rowBody}>
-        <Text style={[styles.rowTitle, { color: theme.text }]} numberOfLines={1}>
-          {notification.title}
-        </Text>
-        <Text style={[styles.rowText, { color: theme.textSecondary }]} numberOfLines={2}>
-          {notification.body}
-        </Text>
-        <Text style={[styles.rowTime, { color: theme.muted }]}>{timeLabel}</Text>
-      </View>
-      {!notification.read ? (
-        <View style={[styles.unreadDot, { backgroundColor: theme.brandOrange }]} />
-      ) : null}
-    </Pressable>
-  );
-};
+const SKELETON_ROWS = [0, 1, 2, 3];
 
 export const NotificationBell = () => {
   // Hooks
   const { t } = useTranslation('notify');
   const theme = useTheme();
-  const { data: notifications = [] } = useNotifications();
+  const { data: notifications = [], isLoading } = useNotifications();
   const markRead = useMarkNotificationRead();
   const markAll = useMarkAllNotificationsRead();
+  const toggleRead = useToggleNotificationRead();
+  const deleteNotification = useDeleteNotification();
 
   // State
   const [isOpen, setIsOpen] = useState(false);
 
   // 變數
   const unreadCount = notifications.filter((item) => !item.read).length;
+  const sections = groupByDate(notifications);
 
   // Function
   const handleItemPress = (notification: SystemNotification) => {
@@ -87,6 +47,19 @@ export const NotificationBell = () => {
     setIsOpen(false);
     if (notification.actionPath) router.push(notification.actionPath);
   };
+
+  const renderItem = ({ item }: { item: SystemNotification }) => (
+    <NotificationRow
+      notification={item}
+      onPress={() => handleItemPress(item)}
+      onToggleRead={() => toggleRead.mutate(item.id)}
+      onDelete={() => deleteNotification.mutate(item.id)}
+    />
+  );
+
+  const renderSectionHeader = ({ section }: { section: NotificationSection }) => (
+    <NotificationSectionHeader groupKey={section.key} unreadCount={section.unreadCount} />
+  );
 
   // JSX
   return (
@@ -107,7 +80,19 @@ export const NotificationBell = () => {
           </Pressable>
         ) : null}
 
-        {notifications.length === 0 ? (
+        {isLoading ? (
+          <View style={styles.skeletonList}>
+            {SKELETON_ROWS.map((row) => (
+              <View key={row} style={styles.skeletonRow}>
+                <Skeleton width={36} height={36} radius={Radius.full} />
+                <View style={styles.skeletonBody}>
+                  <Skeleton width="60%" height={14} />
+                  <Skeleton width="90%" height={12} />
+                </View>
+              </View>
+            ))}
+          </View>
+        ) : notifications.length === 0 ? (
           <View style={styles.empty}>
             <EmptyState
               icon={<Bell color={theme.muted} size={32} />}
@@ -116,15 +101,16 @@ export const NotificationBell = () => {
             />
           </View>
         ) : (
-          <ScrollView style={styles.list} showsVerticalScrollIndicator={false}>
-            {notifications.map((notification) => (
-              <NotificationRow
-                key={notification.id}
-                notification={notification}
-                onPress={() => handleItemPress(notification)}
-              />
-            ))}
-          </ScrollView>
+          <GestureHandlerRootView style={styles.list}>
+            <SectionList
+              sections={sections}
+              keyExtractor={(item) => item.id}
+              renderItem={renderItem}
+              renderSectionHeader={renderSectionHeader}
+              showsVerticalScrollIndicator={false}
+              stickySectionHeadersEnabled={false}
+            />
+          </GestureHandlerRootView>
         )}
       </Sheet>
     </>
@@ -159,38 +145,17 @@ const styles = StyleSheet.create({
   empty: {
     height: 280,
   },
-  row: {
+  skeletonList: {
+    gap: Spacing.three,
+    paddingVertical: Spacing.two,
+  },
+  skeletonRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: Spacing.two,
-    padding: Spacing.three,
-    marginBottom: Spacing.two,
-    borderWidth: 1,
-    borderRadius: Radius.lg,
+    alignItems: 'center',
+    gap: Spacing.three,
   },
-  rowBody: {
+  skeletonBody: {
     flex: 1,
-    gap: Spacing.half,
-  },
-  rowTitle: {
-    fontFamily: Fonts.sans,
-    fontSize: 15,
-    fontWeight: '600',
-  },
-  rowText: {
-    fontFamily: Fonts.sans,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  rowTime: {
-    fontFamily: Fonts.sans,
-    fontSize: 11,
-    marginTop: Spacing.half,
-  },
-  unreadDot: {
-    width: 8,
-    height: 8,
-    borderRadius: Radius.full,
-    marginTop: Spacing.one,
+    gap: Spacing.two,
   },
 });

@@ -92,3 +92,24 @@ export const useMarkAllNotificationsRead = () => {
     },
   });
 };
+
+export const useDeleteNotification = () => {
+  return useMutation({
+    // TODO: apiFetch DELETE 當後端提供刪除端點；目前無端點，先以本地 cache 移除
+    mutationFn: async (id: string) => {
+      queryClient.setQueryData<SystemNotification[]>(QUERY_KEYS.notifications(), (prev) =>
+        (prev ?? []).filter((n) => n.id !== id),
+      );
+    },
+  });
+};
+
+export const useToggleNotificationRead = () => {
+  return useMutation({
+    mutationFn: async (id: string) => {
+      queryClient.setQueryData<SystemNotification[]>(QUERY_KEYS.notifications(), (prev) =>
+        (prev ?? []).map((n) => (n.id === id ? { ...n, read: !n.read } : n)),
+      );
+    },
+  });
+};

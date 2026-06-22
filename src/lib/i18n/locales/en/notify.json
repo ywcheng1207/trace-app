@@ -19,5 +19,12 @@
   "center_title": "Notifications",
   "center_empty_title": "No notifications yet",
   "center_empty_desc": "System notifications will appear here",
-  "mark_all_read": "Mark all as read"
+  "mark_all_read": "Mark all as read",
+  "group_today": "Today",
+  "group_yesterday": "Yesterday",
+  "group_this_week": "This week",
+  "group_earlier": "Earlier",
+  "mark_read": "Mark read",
+  "mark_unread": "Mark unread",
+  "delete": "Delete"
 }

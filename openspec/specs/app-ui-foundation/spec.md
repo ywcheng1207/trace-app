@@ -1,4 +1,31 @@
-## MODIFIED Requirements
+# app-ui-foundation Specification
+
+## Purpose
+TBD - created by archiving change app-frontend-foundation. Update Purpose after archive.
+## Requirements
+### Requirement: 主題 Token
+
+設計 token 集中於 `src/constants/theme.ts`，色彩經 `useTheme()` 取用，**禁止元件硬編碼 hex 或魔術圓角**。色票 SHALL 對齊 `trace` web 的 shadcn「zinc」調色盤與品牌色，並同時提供 light / dark 兩套等價值。圓角 SHALL 以 8px 為基準（`sm 4 / md 6 / lg 8 / xl 12 / full`），浮動大面（toast / sheet）用 16。
+
+#### Scenario: 取用語意色
+
+- **WHEN** 元件需要顏色
+- **THEN** 透過 `useTheme()` 取語意 token（background / card / text / textSecondary / border / muted / primary / danger / success / warning / info / overlay），不出現硬編碼 hex
+
+#### Scenario: 品牌色
+
+- **WHEN** 需要強調（今天 / 連結 / accent 條）或選取高亮
+- **THEN** 使用 `brandOrange` / `brandYellow` token，與 web 一致
+
+#### Scenario: Light / Dark 一致
+
+- **WHEN** 切換系統主題或 App 主題
+- **THEN** 同一語意 token 解析到 light / dark 對應值，畫面在兩模式皆正確且對齊 web
+
+#### Scenario: 圓角基準
+
+- **WHEN** 元件設定圓角
+- **THEN** 採 `Radius` scale（預設 `lg`=8px），不使用魔術數字
 
 ### Requirement: 共用 UI Kit
 App SHALL 提供一組以 RN `StyleSheet` + theme token 實作的共用元件：Button、TextField、Select、DatePicker、Checkbox、Switch、Card、Badge、Progress、Skeleton、Modal/Sheet、Tabs、Avatar、PageHeader、IconButton、BrandLabel、Loading、EmptyState、Toast、SectionHeader、ActionSheet。各 feature SHALL 重用這些元件，禁止重造。
@@ -30,8 +57,6 @@ App SHALL 提供一組以 RN `StyleSheet` + theme token 實作的共用元件：
 #### Scenario: ActionSheet 破壞性項目
 - **WHEN** `ActionSheet` 的 `actions` 含 `destructive: true` 的項目
 - **THEN** 該項目文字以 `theme.danger` 呈現，與一般項目區別
-
-## ADDED Requirements
 
 ### Requirement: 動作層級規範
 App 的任一畫面區段 SHALL 遵循三級動作層級：同時可見的 primary（filled）按鈕至多 1 顆；次要動作 SHALL 用 `secondary` variant 並以每列最多 2 顆的橫向排列；破壞性或低頻動作 SHALL 收進 overflow `ActionSheet` 或使用 `ghost` / text 樣式，禁止以全寬 filled（含 `danger` 全寬 block）呈現破壞性動作。

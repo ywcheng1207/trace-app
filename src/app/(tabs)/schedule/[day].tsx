@@ -1,14 +1,17 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
+import { ChevronLeft, MoreHorizontal } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { ActionSheet } from '@/components/ui/action-sheet';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/ui/empty-state';
+import { IconButton } from '@/components/ui/icon-button';
 import { ScreenContainer } from '@/components/ui/screen-container';
+import { SectionHeader } from '@/components/ui/section-header';
 import { TextArea } from '@/components/ui/text-area';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useExercises } from '@/features/exercises/api/hooks';
@@ -34,7 +37,7 @@ import { showNotification } from '@/store/slices/ui-slice';
 
 const DayDetailScreen = () => {
   const { day } = useLocalSearchParams<{ day: string }>();
-  const { t } = useTranslation(['schedule', 'notify']);
+  const { t } = useTranslation(['schedule', 'notify', 'common']);
   const theme = useTheme();
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -55,6 +58,7 @@ const DayDetailScreen = () => {
   const [isGuideOpen, setIsGuideOpen] = useState(false);
   const [isSaveTemplateOpen, setIsSaveTemplateOpen] = useState(false);
   const [isApplyTemplateOpen, setIsApplyTemplateOpen] = useState(false);
+  const [isPlanActionsOpen, setIsPlanActionsOpen] = useState(false);
   const [pendingTemplate, setPendingTemplate] = useState<TrainingTemplate | null>(null);
 
   const isLibraryEmpty = (library ?? []).length === 0;
@@ -136,6 +140,16 @@ const DayDetailScreen = () => {
     );
   };
 
+  const planOverflowAction =
+    exercises.length > 0 ? (
+      <IconButton
+        accessibilityLabel={t('common:more_actions')}
+        onPress={() => setIsPlanActionsOpen(true)}
+      >
+        <MoreHorizontal color={theme.text} size={22} />
+      </IconButton>
+    ) : null;
+
   return (
     <ScreenContainer scroll>
       <Pressable onPress={() => router.back()} style={styles.backRow} hitSlop={8}>
@@ -148,66 +162,50 @@ const DayDetailScreen = () => {
         <Text style={[styles.subtitle, { color: theme.textSecondary }]}>{t('day_subtitle')}</Text>
       </View>
 
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>{t('training_plan')}</Text>
-      {exercises.length === 0 ? (
-        <Card>
-          <EmptyState
-            title={t('no_exercises_arranged')}
-            description={t('add_first_exercise_desc')}
-          />
-        </Card>
-      ) : (
-        exercises.map((exercise) => (
-          <PlanExerciseCard
-            key={exercise.id}
-            exercise={exercise}
-            onChange={handlePlanChange}
-            onRemove={() => handleRemoveExercise(exercise.id)}
-          />
-        ))
-      )}
-      <View style={styles.planActions}>
-        <Button
-          label={t('add_exercise')}
-          variant="secondary"
-          onPress={handleAddPress}
-          disabled={isAtPlanLimit}
-          fullWidth
-        />
-        {isAtPlanLimit ? (
-          <Text style={[styles.limitHint, { color: theme.muted }]}>
-            {t('plan_limit_reached', { max: MAX_PLAN_EXERCISES })}
-          </Text>
-        ) : null}
-        <View style={styles.templateRow}>
-          <View style={styles.templateAction}>
+      <View style={styles.section}>
+        <SectionHeader title={t('training_plan')} action={planOverflowAction} />
+        {exercises.length === 0 ? (
+          <Card>
+            <EmptyState
+              title={t('no_exercises_arranged')}
+              description={t('add_first_exercise_desc')}
+            />
+          </Card>
+        ) : (
+          <View style={styles.planList}>
+            {exercises.map((exercise) => (
+              <PlanExerciseCard
+                key={exercise.id}
+                exercise={exercise}
+                onChange={handlePlanChange}
+                onRemove={() => handleRemoveExercise(exercise.id)}
+              />
+            ))}
+          </View>
+        )}
+        <View style={styles.planActionRow}>
+          <View style={styles.planActionItem}>
+            <Button
+              label={t('add_exercise')}
+              variant="secondary"
+              onPress={handleAddPress}
+              disabled={isAtPlanLimit}
+              fullWidth
+            />
+          </View>
+          <View style={styles.planActionItem}>
             <Button
               label={t('apply_template')}
               variant="secondary"
-              size="sm"
               onPress={() => setIsApplyTemplateOpen(true)}
               fullWidth
             />
           </View>
-          {exercises.length > 0 ? (
-            <View style={styles.templateAction}>
-              <Button
-                label={t('save_as_template')}
-                variant="secondary"
-                size="sm"
-                onPress={() => setIsSaveTemplateOpen(true)}
-                fullWidth
-              />
-            </View>
-          ) : null}
         </View>
-        {exercises.length > 0 ? (
-          <Button
-            label={t('clear_plan')}
-            variant="ghost"
-            onPress={() => setIsClearConfirmOpen(true)}
-            fullWidth
-          />
+        {isAtPlanLimit ? (
+          <Text style={[styles.limitHint, { color: theme.muted }]}>
+            {t('plan_limit_reached', { max: MAX_PLAN_EXERCISES })}
+          </Text>
         ) : null}
         <Button
           label={t('save_plan')}
@@ -217,27 +215,50 @@ const DayDetailScreen = () => {
         />
       </View>
 
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>{t('body_metric')}</Text>
-      <Card>
-        <BodyMetricsForm date={day} metric={metric ?? null} />
-      </Card>
+      <View style={styles.section}>
+        <SectionHeader title={t('body_metric')} />
+        <Card>
+          <BodyMetricsForm date={day} metric={metric ?? null} />
+        </Card>
+      </View>
 
-      <Text style={[styles.sectionTitle, { color: theme.text }]}>{t('note')}</Text>
-      <Card>
-        <View style={styles.noteSection}>
-          <TextArea
-            placeholder={t('note_placeholder')}
-            value={noteText}
-            onChangeText={setNoteText}
-          />
-          <Button
-            label={t('save_note')}
-            onPress={handleSaveNote}
-            loading={saveDayNote.isPending}
-            fullWidth
-          />
-        </View>
-      </Card>
+      <View style={styles.section}>
+        <SectionHeader title={t('note')} />
+        <Card>
+          <View style={styles.noteSection}>
+            <TextArea
+              placeholder={t('note_placeholder')}
+              value={noteText}
+              onChangeText={setNoteText}
+            />
+            <Button
+              label={t('save_note')}
+              onPress={handleSaveNote}
+              loading={saveDayNote.isPending}
+              fullWidth
+            />
+          </View>
+        </Card>
+      </View>
+
+      <ActionSheet
+        visible={isPlanActionsOpen}
+        onClose={() => setIsPlanActionsOpen(false)}
+        title={t('training_plan')}
+        actions={[
+          {
+            key: 'save_as_template',
+            label: t('save_as_template'),
+            onPress: () => setIsSaveTemplateOpen(true),
+          },
+          {
+            key: 'clear_plan',
+            label: t('clear_plan'),
+            destructive: true,
+            onPress: () => setIsClearConfirmOpen(true),
+          },
+        ]}
+      />
 
       <ExercisePickerSheet
         visible={isPickerOpen}
@@ -314,20 +335,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: Spacing.half,
   },
-  sectionTitle: {
-    fontFamily: Fonts.sans,
-    fontSize: 18,
-    fontWeight: '700',
+  section: {
+    gap: Spacing.three,
     marginTop: Spacing.two,
   },
-  planActions: {
+  planList: {
     gap: Spacing.two,
   },
-  templateRow: {
+  planActionRow: {
     flexDirection: 'row',
     gap: Spacing.two,
   },
-  templateAction: {
+  planActionItem: {
     flex: 1,
   },
   limitHint: {

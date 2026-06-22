@@ -10,5 +10,6 @@
   "loading": "加载中...",
   "total": "总计",
   "comingSoon": "即将推出",
-  "comingSoonDesc": "此区块即将开发。"
+  "comingSoonDesc": "此区块即将开发。",
+  "more_actions": "更多操作"
 }

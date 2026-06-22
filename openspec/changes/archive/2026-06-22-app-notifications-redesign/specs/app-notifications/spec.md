@@ -1,9 +1,4 @@
-# app-notifications Specification
-
-## Purpose
-通知中心：輪詢取得通知、日期分組呈現、已讀 / 刪除管理與未讀提示。
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: 通知列表與已讀管理
 通知 SHALL 透過 GET `/api/notifications`（`useNotifications`，apiFetch，`staleTime: 1000 * 60`）取得。標記已讀 SHALL 呼叫 PUT `/api/notifications/[id]/read`（`useMarkRead`）。全部已讀 SHALL 呼叫 PUT `/api/notifications/read-all`（`useMarkAllRead`）。刪除單則 SHALL 呼叫 `useDeleteNotification`（後端端點未備時得先 cache-only 移除，標 `// TODO: apiFetch`）。mutation onSuccess SHALL invalidate notifications query 或更新 cache。

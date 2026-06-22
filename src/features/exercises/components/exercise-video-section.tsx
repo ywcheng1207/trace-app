@@ -1,7 +1,7 @@
 import * as ImagePicker from 'expo-image-picker';
-import { PlayCircle, Video } from 'lucide-react-native';
+import { ChevronRight, PlayCircle, Video } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -14,9 +14,14 @@ import { showNotification } from '@/store/slices/ui-slice';
 type ExerciseVideoSectionProps = {
   exerciseId: string;
   videoUrl: string | null;
+  onViewVideos?: () => void;
 };
 
-export const ExerciseVideoSection = ({ exerciseId, videoUrl }: ExerciseVideoSectionProps) => {
+export const ExerciseVideoSection = ({
+  exerciseId,
+  videoUrl,
+  onViewVideos,
+}: ExerciseVideoSectionProps) => {
   const { t } = useTranslation(['exercises', 'notify']);
   const theme = useTheme();
   const dispatch = useAppDispatch();
@@ -38,7 +43,15 @@ export const ExerciseVideoSection = ({ exerciseId, videoUrl }: ExerciseVideoSect
 
   return (
     <Card>
-      <Text style={[styles.title, { color: theme.textSecondary }]}>{t('demo_video')}</Text>
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: theme.textSecondary }]}>{t('demo_video')}</Text>
+        {onViewVideos ? (
+          <Pressable onPress={onViewVideos} hitSlop={8} style={styles.viewLink}>
+            <Text style={[styles.viewLinkText, { color: theme.accent }]}>{t('view_videos')}</Text>
+            <ChevronRight color={theme.accent} size={16} />
+          </Pressable>
+        ) : null}
+      </View>
       <View style={[styles.player, { backgroundColor: theme.backgroundElement, borderColor: theme.border }]}>
         {videoUrl ? (
           <>
@@ -67,11 +80,26 @@ export const ExerciseVideoSection = ({ exerciseId, videoUrl }: ExerciseVideoSect
 };
 
 const styles = StyleSheet.create({
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: Spacing.two,
+  },
   title: {
     fontFamily: Fonts.sans,
     fontSize: 13,
     fontWeight: '600',
-    marginBottom: Spacing.two,
+  },
+  viewLink: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.half,
+  },
+  viewLinkText: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    fontWeight: '600',
   },
   player: {
     aspectRatio: 16 / 9,

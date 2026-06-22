@@ -1,17 +1,20 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ChevronLeft } from 'lucide-react-native';
+import { Archive, ChevronLeft, MoreHorizontal } from 'lucide-react-native';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
+import { ActionSheet } from '@/components/ui/action-sheet';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Chip } from '@/components/ui/chip';
 import { ConfirmDialog } from '@/components/ui/confirm-dialog';
 import { EmptyState } from '@/components/ui/empty-state';
+import { IconButton } from '@/components/ui/icon-button';
 import { Loading } from '@/components/ui/loading';
 import { ScreenContainer } from '@/components/ui/screen-container';
+import { SectionHeader } from '@/components/ui/section-header';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useArchiveExercise, useExercise, useExerciseUsage } from '@/features/exercises/api/hooks';
 import { AiCoachSheet } from '@/features/ai-coach/components/ai-coach-sheet';
@@ -33,6 +36,7 @@ const ExerciseDetailScreen = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isArchiveConfirmOpen, setIsArchiveConfirmOpen] = useState(false);
   const [isAiCoachOpen, setIsAiCoachOpen] = useState(false);
+  const [isActionSheetOpen, setIsActionSheetOpen] = useState(false);
 
   const usageCount = usage?.planCount ?? 0;
   const archiveMessage =
@@ -57,6 +61,10 @@ const ExerciseDetailScreen = () => {
 
   const handleEditNote = () => {
     router.push(`/exercises/note/${id}`);
+  };
+
+  const handleViewVideos = () => {
+    router.push(`/exercises/video/${id}`);
   };
 
   if (isLoading) return <Loading />;
@@ -90,12 +98,26 @@ const ExerciseDetailScreen = () => {
     { key: 'kineticChain', label: t('exercise_kinetic_chain'), value: kineticChainLabel },
   ];
 
+  const noteEditAction = (
+    <Pressable onPress={handleEditNote} hitSlop={8}>
+      <Text style={[styles.editNote, { color: theme.accent }]}>{t('edit_note')}</Text>
+    </Pressable>
+  );
+
   return (
     <ScreenContainer scroll>
-      <Pressable onPress={() => router.back()} style={styles.backRow} hitSlop={8}>
-        <ChevronLeft color={theme.accent} size={20} />
-        <Text style={[styles.backText, { color: theme.accent }]}>{t('back')}</Text>
-      </Pressable>
+      <View style={styles.topRow}>
+        <Pressable onPress={() => router.back()} style={styles.backRow} hitSlop={8}>
+          <ChevronLeft color={theme.accent} size={20} />
+          <Text style={[styles.backText, { color: theme.accent }]}>{t('back')}</Text>
+        </Pressable>
+        <IconButton
+          accessibilityLabel={t('common:more_actions')}
+          onPress={() => setIsActionSheetOpen(true)}
+        >
+          <MoreHorizontal color={theme.text} size={22} />
+        </IconButton>
+      </View>
 
       <Text style={[styles.title, { color: theme.text }]}>{exercise.name}</Text>
 
@@ -126,39 +148,38 @@ const ExerciseDetailScreen = () => {
         )}
       </Card>
 
-      <ExerciseVideoSection exerciseId={exercise.id} videoUrl={exercise.videoUrl} />
-
-      <Button
-        label={t('view_videos')}
-        variant="secondary"
-        onPress={() => router.push(`/exercises/video/${id}`)}
-        fullWidth
+      <ExerciseVideoSection
+        exerciseId={exercise.id}
+        videoUrl={exercise.videoUrl}
+        onViewVideos={handleViewVideos}
       />
 
+      <SectionHeader title={t('exercise_note')} action={noteEditAction} />
       <Card>
-        <View style={styles.noteHeader}>
-          <Text style={[styles.sectionTitle, { color: theme.textSecondary }]}>
-            {t('exercise_note')}
-          </Text>
-          <Pressable onPress={handleEditNote} hitSlop={8}>
-            <Text style={[styles.editNote, { color: theme.accent }]}>{t('edit_note')}</Text>
-          </Pressable>
-        </View>
         <Text style={[styles.note, { color: exercise.note ? theme.text : theme.muted }]}>
           {exercise.note ?? t('no_note')}
         </Text>
       </Card>
 
-      <View style={styles.buttons}>
-        <Button label={t('edit')} onPress={() => setIsEditOpen(true)} fullWidth />
+      <View style={styles.actions}>
         <Button label={t('ai_advice_button')} variant="secondary" onPress={handleAiAdvice} fullWidth />
-        <Button
-          label={t('archive')}
-          variant="danger"
-          onPress={() => setIsArchiveConfirmOpen(true)}
-          fullWidth
-        />
+        <Button label={t('edit')} onPress={() => setIsEditOpen(true)} fullWidth />
       </View>
+
+      <ActionSheet
+        visible={isActionSheetOpen}
+        onClose={() => setIsActionSheetOpen(false)}
+        title={t('common:more_actions')}
+        actions={[
+          {
+            key: 'archive',
+            label: t('archive'),
+            icon: <Archive color={theme.danger} size={20} />,
+            destructive: true,
+            onPress: () => setIsArchiveConfirmOpen(true),
+          },
+        ]}
+      />
 
       <ExerciseFormSheet
         visible={isEditOpen}
@@ -189,6 +210,11 @@ const ExerciseDetailScreen = () => {
 export default ExerciseDetailScreen;
 
 const styles = StyleSheet.create({
+  topRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   backRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -209,11 +235,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     marginBottom: Spacing.two,
-  },
-  noteHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
   editNote: {
     fontFamily: Fonts.sans,
@@ -244,7 +265,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
   },
-  buttons: {
+  actions: {
     gap: Spacing.two,
   },
 });

@@ -12,15 +12,14 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { IconButton } from '@/components/ui/icon-button';
 import { ScreenContainer } from '@/components/ui/screen-container';
 import { SectionHeader } from '@/components/ui/section-header';
-import { TextArea } from '@/components/ui/text-area';
 import { Fonts, Spacing } from '@/constants/theme';
 import { useExercises } from '@/features/exercises/api/hooks';
 import { Exercise } from '@/features/exercises/api/schemas';
+import { RichTextViewer } from '@/features/notes/components/rich-text-viewer';
 import {
   useBodyMetric,
   useDayNote,
   useDayPlan,
-  useSaveDayNote,
   useSaveDayPlan,
 } from '@/features/schedule/api/hooks';
 import { MAX_PLAN_EXERCISES, PlanExercise } from '@/features/schedule/api/schemas';
@@ -47,12 +46,9 @@ const DayDetailScreen = () => {
   const { data: note } = useDayNote(day);
   const { data: library } = useExercises();
   const saveDayPlan = useSaveDayPlan();
-  const saveDayNote = useSaveDayNote();
 
   const [exercises, setExercises] = useState<PlanExercise[]>(dayPlan?.exercises ?? []);
   const [syncedPlan, setSyncedPlan] = useState(dayPlan);
-  const [noteText, setNoteText] = useState(note ?? '');
-  const [syncedNote, setSyncedNote] = useState(note);
   const [isPickerOpen, setIsPickerOpen] = useState(false);
   const [isClearConfirmOpen, setIsClearConfirmOpen] = useState(false);
   const [isGuideOpen, setIsGuideOpen] = useState(false);
@@ -64,14 +60,10 @@ const DayDetailScreen = () => {
   const isLibraryEmpty = (library ?? []).length === 0;
   const isAtPlanLimit = exercises.length >= MAX_PLAN_EXERCISES;
 
-  // Re-sync local working copies when loaded data changes (adjust state during render).
+  // Re-sync local working copy when loaded data changes (adjust state during render).
   if (dayPlan !== syncedPlan) {
     setSyncedPlan(dayPlan);
     setExercises(dayPlan?.exercises ?? []);
-  }
-  if (note !== syncedNote) {
-    setSyncedNote(note);
-    setNoteText(note ?? '');
   }
 
   const handlePlanChange = (updated: PlanExercise) => {
@@ -130,14 +122,8 @@ const DayDetailScreen = () => {
     );
   };
 
-  const handleSaveNote = () => {
-    saveDayNote.mutate(
-      { date: day, note: noteText },
-      {
-        onSuccess: () =>
-          dispatch(showNotification({ type: 'success', message: t('notify:save_success') })),
-      },
-    );
+  const handleEditNote = () => {
+    router.push(`/schedule/${day}/note`);
   };
 
   const planOverflowAction =
@@ -149,6 +135,12 @@ const DayDetailScreen = () => {
         <MoreHorizontal color={theme.text} size={22} />
       </IconButton>
     ) : null;
+
+  const noteEditAction = (
+    <Pressable onPress={handleEditNote} hitSlop={8}>
+      <Text style={[styles.editNote, { color: theme.accent }]}>{t('edit_note')}</Text>
+    </Pressable>
+  );
 
   return (
     <ScreenContainer scroll>
@@ -223,21 +215,9 @@ const DayDetailScreen = () => {
       </View>
 
       <View style={styles.section}>
-        <SectionHeader title={t('note')} />
+        <SectionHeader title={t('note')} action={noteEditAction} />
         <Card>
-          <View style={styles.noteSection}>
-            <TextArea
-              placeholder={t('note_placeholder')}
-              value={noteText}
-              onChangeText={setNoteText}
-            />
-            <Button
-              label={t('save_note')}
-              onPress={handleSaveNote}
-              loading={saveDayNote.isPending}
-              fullWidth
-            />
-          </View>
+          <RichTextViewer value={note ?? null} placeholder={t('note_placeholder')} />
         </Card>
       </View>
 
@@ -354,7 +334,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     textAlign: 'center',
   },
-  noteSection: {
-    gap: Spacing.three,
+  editNote: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });
